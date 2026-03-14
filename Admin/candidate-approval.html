@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candidate Approval — ELECTRA Admin</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<style>
+.approval-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  transition: all .3s var(--ease-out);
+}
+.approval-card:hover { border-color: var(--border-gold); box-shadow: var(--shadow-gold); }
+.approval-card.approved { border-color: rgba(0,230,118,.3); }
+.approval-card.rejected { border-color: rgba(242,95,122,.3); opacity:.7; }
+
+.manifesto-preview {
+  background: var(--surface-2);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 12px 0;
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-mark">E</div><div class="sidebar-logo-text"><div class="sidebar-logo-title">ELECTRA</div><div class="sidebar-logo-sub">ADMIN PANEL</div></div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    <div class="nav-section-label">Students</div>
+    <a href="students.html" class="nav-item"><span class="nav-icon">👥</span><span>Student Management</span></a>
+    <div class="nav-section-label">Election</div>
+    <a href="election-setup.html" class="nav-item"><span class="nav-icon">⚙️</span><span>Election Setup</span></a>
+    <a href="seat-management.html" class="nav-item"><span class="nav-icon">🏛️</span><span>Seat Management</span></a>
+    <a href="candidate-approval.html" class="nav-item active"><span class="nav-icon">✅</span><span>Candidate Approval</span><span class="nav-badge">3</span></a>
+    <div class="nav-section-label">Results</div>
+    <a href="results.html" class="nav-item"><span class="nav-icon">🏆</span><span>Results &amp; Publishing</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--navy-light);border:2px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;flex-shrink:0">A</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name">Admin User</div><div class="sidebar-user-role">College Administrator</div></div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar" id="topbar">
+  <button onclick="Sidebar.toggle()" class="topbar-btn" style="margin-right:8px">☰</button>
+  <h2 style="font-family:var(--font-display);font-size:1.1rem">Candidate Approval</h2>
+  <div class="topbar-actions">
+    <span class="badge badge-rose" style="font-size:13px">3 Pending Review</span>
+  </div>
+</header>
+
+<main class="main-content">
+  <div class="page-header flex-between animate-up">
+    <div>
+      <div class="section-eyebrow" style="margin-bottom:4px">Election Management</div>
+      <h1 class="page-title">Candidate Applications</h1>
+      <p class="page-sub">Review and approve or reject candidate applications for each seat.</p>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" style="margin-bottom:24px; width:fit-content; animation: fade-up .5s var(--ease-out) both">
+    <button class="tab-btn active" onclick="filterApprovals('all', this)">All (8)</button>
+    <button class="tab-btn" onclick="filterApprovals('pending', this)">Pending (3)</button>
+    <button class="tab-btn" onclick="filterApprovals('approved', this)">Approved (4)</button>
+    <button class="tab-btn" onclick="filterApprovals('rejected', this)">Rejected (1)</button>
+  </div>
+
+  <!-- APPLICATIONS GRID -->
+  <div style="display:flex;flex-direction:column;gap:16px" id="appContainer">
+
+    <!-- PENDING -->
+    <div class="approval-card animate-up" data-status="pending">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="width:58px;height:58px;border-radius:50%;background:var(--navy-light);border:2px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;color:var(--gold);flex-shrink:0">R</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+            <h4>Rohan Kumar</h4>
+            <span class="badge badge-gold">⚡ Chairman</span>
+            <span class="badge badge-muted">UG · Computer Science</span>
+            <span class="badge" style="background:rgba(233,168,50,.12);color:var(--status-pending);border:1px solid rgba(233,168,50,.3);margin-left:auto">⏳ Pending Review</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-muted)">Reg: 2024CS003 · Applied 2 hours ago</div>
+          <div class="manifesto-preview">
+            "My vision is to transform our college union into a vibrant hub of student activity. I plan to introduce weekly department mixers, improve library hours, and advocate for better hostel facilities..."
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <span class="badge badge-teal">📸 Photo Uploaded</span>
+            <span class="badge badge-teal">📝 Manifesto Added</span>
+            <span class="badge badge-teal">✅ Eligible Student</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-direction:column;flex-shrink:0">
+          <button class="btn btn-success btn-sm" onclick="approveCandidate(this)">✅ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="rejectCandidate(this)">❌ Reject</button>
+          <button class="btn btn-ghost btn-sm" onclick="Modal.open('viewCandidateModal')">👁 View</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="approval-card animate-up-1" data-status="pending">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="width:58px;height:58px;border-radius:50%;background:var(--navy-light);border:2px solid rgba(242,95,122,.5);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;color:var(--rose);flex-shrink:0">S</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+            <h4>Sneha Menon</h4>
+            <span class="badge badge-rose">♀ Lady Representative</span>
+            <span class="badge badge-muted">UG · English</span>
+            <span class="badge" style="background:rgba(233,168,50,.12);color:var(--status-pending);border:1px solid rgba(233,168,50,.3);margin-left:auto">⏳ Pending Review</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-muted)">Reg: 2024EN001 · Applied 4 hours ago</div>
+          <div class="manifesto-preview">
+            "As Lady Representative, I will create safe spaces for all female students, organize mentorship programs with senior students, and ensure women's concerns are properly addressed at every college committee meeting..."
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <span class="badge badge-teal">📸 Photo Uploaded</span>
+            <span class="badge badge-teal">📝 Manifesto Added</span>
+            <span class="badge badge-rose">♀ Female — Eligible</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-direction:column;flex-shrink:0">
+          <button class="btn btn-success btn-sm" onclick="approveCandidate(this)">✅ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="rejectCandidate(this)">❌ Reject</button>
+          <button class="btn btn-ghost btn-sm">👁 View</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="approval-card animate-up-2" data-status="pending">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="width:58px;height:58px;border-radius:50%;background:var(--navy-light);border:2px solid rgba(77,166,255,.5);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;color:var(--sky);flex-shrink:0">A</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+            <h4>Arun Pillai</h4>
+            <span class="badge badge-sky">🏛️ CS PG Representative</span>
+            <span class="badge badge-sky">PG · Computer Science</span>
+            <span class="badge" style="background:rgba(233,168,50,.12);color:var(--status-pending);border:1px solid rgba(233,168,50,.3);margin-left:auto">⏳ Pending Review</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-muted)">Reg: 2024CH001 · Applied 5 hours ago</div>
+          <div class="manifesto-preview">
+            "PG students face unique challenges — research pressure, limited lab access, and lack of networking opportunities. I'll bridge the gap between faculty and students and negotiate better resources for postgraduate programs..."
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <span class="badge badge-teal">📸 Photo Uploaded</span>
+            <span class="badge badge-gold">⚠️ Manifesto Short</span>
+            <span class="badge badge-teal">✅ Eligible (PG, CS)</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-direction:column;flex-shrink:0">
+          <button class="btn btn-success btn-sm" onclick="approveCandidate(this)">✅ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="rejectCandidate(this)">❌ Reject</button>
+          <button class="btn btn-ghost btn-sm">👁 View</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPROVED EXAMPLE -->
+    <div class="approval-card approved animate-up-3" data-status="approved">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="width:58px;height:58px;border-radius:50%;background:rgba(0,230,118,.07);border:2px solid rgba(0,230,118,.4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;color:var(--status-live);flex-shrink:0">K</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+            <h4>Kavya Rajan</h4>
+            <span class="badge badge-gold">🎭 Arts Club Secretary</span>
+            <span class="badge badge-muted">UG · Physics</span>
+            <span class="badge badge-live" style="margin-left:auto">✅ Approved</span>
+          </div>
+          <div style="font-size:13px;color:var(--text-muted)">Reg: 2024PH001 · Approved by Admin · Nov 12</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="revokeApproval(this)">Revoke</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- VIEW CANDIDATE MODAL -->
+<div class="modal-overlay" id="viewCandidateModal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <h3 class="modal-title">Candidate Profile</h3>
+      <button class="modal-close" onclick="Modal.close('viewCandidateModal')">✕</button>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--navy-light);border:3px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:32px;color:var(--gold);flex-shrink:0">R</div>
+      <div>
+        <h3 style="margin-bottom:4px">Rohan Kumar</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="badge badge-gold">Chairman Candidate</span>
+          <span class="badge badge-teal">UG · Computer Science</span>
+          <span class="badge badge-muted">2024CS003</span>
+        </div>
+      </div>
+    </div>
+    <div class="divider" style="margin:16px 0"></div>
+    <h4 style="margin-bottom:10px;color:var(--gold)">📝 Manifesto</h4>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.8;margin-bottom:16px">
+      My vision is to transform our college union into a vibrant hub of student activity. I plan to introduce weekly department mixers, improve library hours, and advocate for better hostel facilities. With 3 years of NSS volunteering and event organizing experience, I have the commitment and skills to serve every student effectively.
+    </p>
+    <h4 style="margin-bottom:10px;color:var(--gold)">🎯 Campaign Points</h4>
+    <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--text-secondary)">
+      <li>🔵 24/7 Library access for exam periods</li>
+      <li>🔵 Monthly cultural fest for all departments</li>
+      <li>🔵 Student grievance portal with 48h response</li>
+      <li>🔵 Industry guest lecture series every semester</li>
+    </ul>
+    <div style="display:flex;gap:10px;margin-top:24px">
+      <button class="btn btn-danger" style="flex:1;justify-content:center" onclick="Modal.close('viewCandidateModal');rejectCandidate()">❌ Reject</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="Modal.close('viewCandidateModal');Toast.success('Candidate approved!')">✅ Approve</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="../assets/js/electra.js"></script>
+<script>
+function approveCandidate(btn) {
+  const card = btn.closest('.approval-card');
+  card.classList.remove('pending'); card.classList.add('approved');
+  card.dataset.status = 'approved';
+  btn.closest('div').innerHTML = '<span class="badge badge-live">✅ Approved</span>';
+  Toast.success('Candidate approved! Now visible to voters.');
+}
+function rejectCandidate(btn) {
+  const card = btn.closest('.approval-card');
+  card.classList.add('rejected'); card.dataset.status = 'rejected';
+  btn.closest('div').innerHTML = '<span class="badge badge-rose">❌ Rejected</span>';
+  Toast.error('Candidate rejected.');
+}
+function revokeApproval(btn) {
+  if(confirm('Revoke this approval?')) { Toast.warning('Approval revoked.'); }
+}
+function filterApprovals(status, tabEl) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  tabEl.classList.add('active');
+  document.querySelectorAll('[data-status]').forEach(card => {
+    card.style.display = (status === 'all' || card.dataset.status === status) ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>

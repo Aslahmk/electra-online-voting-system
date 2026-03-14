@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Election Setup — ELECTRA Admin</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<style>
+.seat-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  transition: all .25s;
+}
+.seat-card:hover { border-color: var(--border-gold); }
+.seat-row {
+  display: flex; align-items: center; gap: 14px;
+}
+.seat-icon {
+  width: 40px; height: 40px;
+  border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.seat-cat-header {
+  padding: 12px 0 8px;
+  font-size: 12px; font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase; letter-spacing: .08em;
+  display: flex; align-items: center; gap: 10px;
+}
+.seat-cat-header::after { content: ''; flex:1; height:1px; background: var(--border-subtle); }
+
+.timeline-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.timeline-dot {
+  width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+  margin-top: 3px;
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-mark">E</div><div class="sidebar-logo-text"><div class="sidebar-logo-title">ELECTRA</div><div class="sidebar-logo-sub">ADMIN PANEL</div></div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    <div class="nav-section-label">Students</div>
+    <a href="students.html" class="nav-item"><span class="nav-icon">👥</span><span>Student Management</span></a>
+    <div class="nav-section-label">Election</div>
+    <a href="election-setup.html" class="nav-item active"><span class="nav-icon">⚙️</span><span>Election Setup</span></a>
+    <a href="seat-management.html" class="nav-item"><span class="nav-icon">🏛️</span><span>Seat Management</span></a>
+    <a href="candidate-approval.html" class="nav-item"><span class="nav-icon">✅</span><span>Candidate Approval</span><span class="nav-badge">3</span></a>
+    <div class="nav-section-label">Results</div>
+    <a href="results.html" class="nav-item"><span class="nav-icon">🏆</span><span>Results &amp; Publishing</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--navy-light);border:2px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;flex-shrink:0">A</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name">Admin User</div><div class="sidebar-user-role">College Administrator</div></div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar" id="topbar">
+  <button onclick="Sidebar.toggle()" class="topbar-btn" style="margin-right:8px">☰</button>
+  <h2 style="font-family:var(--font-display);font-size:1.1rem">Election Setup</h2>
+  <div class="topbar-actions">
+    <span class="badge badge-live"><span class="status-dot live"></span> Election Active</span>
+  </div>
+</header>
+
+<main class="main-content">
+
+  <div class="page-header flex-between animate-up">
+    <div>
+      <div class="section-eyebrow" style="margin-bottom:4px">Election Configuration</div>
+      <h1 class="page-title">Election Setup &amp; Seat Management</h1>
+      <p class="page-sub">Schedule the election, configure seats, and manage voting rules.</p>
+    </div>
+    <div class="flex gap-sm">
+      <button class="btn btn-danger" onclick="stopElection()">⏹ Stop Election</button>
+      <button class="btn btn-primary" onclick="saveSettings()">💾 Save Changes</button>
+    </div>
+  </div>
+
+  <div class="grid-2 animate-up-1" style="margin-bottom:24px">
+
+    <!-- ELECTION SCHEDULE -->
+    <div class="card">
+      <h4 style="margin-bottom:20px">⏱️ Election Schedule</h4>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-group">
+          <label class="form-label">Election Title</label>
+          <input type="text" class="form-input" value="College Union Election 2024–25">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Election Date</label>
+          <input type="date" class="form-input" value="2024-11-20">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <input type="time" class="form-input" value="09:00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Time</label>
+            <input type="time" class="form-input" value="16:00">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Application Deadline</label>
+          <input type="date" class="form-input" value="2024-11-18">
+          <span class="form-hint">Students cannot apply after this date</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- TIMELINE -->
+      <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Election Timeline</div>
+      <div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--status-live)"></div>
+          <div>
+            <div style="font-weight:600;font-size:14px;color:var(--status-live)">NOW — Application Window Open</div>
+            <div style="font-size:12px;color:var(--text-muted)">Students can apply for seats</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--gold)"></div>
+          <div>
+            <div style="font-weight:600;font-size:14px">Nov 18 — Application Deadline</div>
+            <div style="font-size:12px;color:var(--text-muted)">Last date to submit candidacy</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:var(--sky)"></div>
+          <div>
+            <div style="font-weight:600;font-size:14px">Nov 20, 9:00 AM — Voting Opens</div>
+            <div style="font-size:12px;color:var(--text-muted)">All eligible students can vote</div>
+          </div>
+        </div>
+        <div class="timeline-item" style="border-bottom:none">
+          <div class="timeline-dot" style="background:var(--rose)"></div>
+          <div>
+            <div style="font-weight:600;font-size:14px">Nov 20, 4:00 PM — Voting Closes</div>
+            <div style="font-size:12px;color:var(--text-muted)">Results compiled and published</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ELECTION RULES -->
+    <div class="card">
+      <h4 style="margin-bottom:20px">🔒 Voting Rules &amp; Restrictions</h4>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+          <div style="font-size:18px;flex-shrink:0">🏛️</div>
+          <div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:2px">General Seats</div>
+            <div style="font-size:13px;color:var(--text-muted)">All students (UG + PG, any department, any gender) can vote for all general college union seats.</div>
+          </div>
+          <div style="margin-left:auto;flex-shrink:0">
+            <label style="cursor:pointer;display:flex;align-items:center;gap:6px">
+              <input type="checkbox" checked style="accent-color:var(--gold);width:16px;height:16px"> <span style="font-size:12px">Active</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+          <div style="font-size:18px;flex-shrink:0">🏫</div>
+          <div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:2px">Department Representatives</div>
+            <div style="font-size:13px;color:var(--text-muted)">UG students vote only UG Dept Rep. PG students vote only PG Dept Rep. Cross-level voting blocked.</div>
+          </div>
+          <div style="margin-left:auto;flex-shrink:0">
+            <label style="cursor:pointer;display:flex;align-items:center;gap:6px">
+              <input type="checkbox" checked style="accent-color:var(--gold);width:16px;height:16px"> <span style="font-size:12px">Active</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+          <div style="font-size:18px;flex-shrink:0">👩</div>
+          <div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:2px">Lady Representative</div>
+            <div style="font-size:13px;color:var(--text-muted)">Only female students can apply for and vote for Lady Representative seats (2 selections).</div>
+          </div>
+          <div style="margin-left:auto;flex-shrink:0">
+            <label style="cursor:pointer;display:flex;align-items:center;gap:6px">
+              <input type="checkbox" checked style="accent-color:var(--gold);width:16px;height:16px"> <span style="font-size:12px">Active</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="background:var(--surface-2);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:flex-start;gap:12px">
+          <div style="font-size:18px;flex-shrink:0">🔁</div>
+          <div>
+            <div style="font-weight:600;font-size:14px;margin-bottom:2px">Double Vote Prevention</div>
+            <div style="font-size:13px;color:var(--text-muted)">Once a student casts their vote, the system permanently locks their ballot to prevent re-voting.</div>
+          </div>
+          <div style="margin-left:auto;flex-shrink:0">
+            <label style="cursor:pointer;display:flex;align-items:center;gap:6px">
+              <input type="checkbox" checked disabled style="accent-color:var(--gold);width:16px;height:16px"> <span style="font-size:12px;color:var(--text-muted)">Always On</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h4 style="margin-bottom:14px">📋 UUC Representatives</h4>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:14px;color:var(--text-secondary);flex:1">Number of UUC seats to elect</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="adjustUUC(-1)">−</button>
+          <span id="uucCount" style="font-family:var(--font-mono);font-size:1.2rem;font-weight:700;min-width:32px;text-align:center">2</span>
+          <button class="btn btn-ghost btn-sm" onclick="adjustUUC(1)">+</button>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px">Each student selects <span id="uucCountDisplay">2</span> candidates from the UUC candidate list.</div>
+
+    </div>
+  </div>
+
+  <!-- SEAT MANAGEMENT SECTION -->
+  <div class="card animate-up-2">
+    <div class="flex-between" style="margin-bottom:20px">
+      <h4>🏛️ Seat Configuration</h4>
+      <button class="btn btn-secondary btn-sm" onclick="Modal.open('addSeatModal')">+ Add Custom Seat</button>
+    </div>
+
+    <!-- GENERAL SEATS -->
+    <div class="seat-cat-header">🏛️ General College Union Seats <span class="badge badge-muted">All Students Vote</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      <div class="seat-card" id="seat-chairman">
+        <div class="seat-row">
+          <div class="seat-icon" style="background:rgba(233,168,50,.1)">👑</div>
+          <div style="flex:1">
+            <div style="font-weight:600">Chairman</div>
+            <div style="font-size:12px;color:var(--text-muted)">1 seat · All students eligible to vote</div>
+          </div>
+          <span class="badge badge-teal">3 Candidates</span>
+          <span class="badge badge-live">Active</span>
+          <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Enabled</label>
+        </div>
+      </div>
+      <div class="seat-card">
+        <div class="seat-row">
+          <div class="seat-icon" style="background:rgba(233,168,50,.1)">🤝</div>
+          <div style="flex:1"><div style="font-weight:600">Vice Chairman</div><div style="font-size:12px;color:var(--text-muted)">1 seat · All students eligible</div></div>
+          <span class="badge badge-teal">2 Candidates</span>
+          <span class="badge badge-live">Active</span>
+          <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Enabled</label>
+        </div>
+      </div>
+      <div class="seat-card">
+        <div class="seat-row">
+          <div class="seat-icon" style="background:rgba(233,168,50,.1)">📋</div>
+          <div style="flex:1"><div style="font-weight:600">General Secretary</div><div style="font-size:12px;color:var(--text-muted)">1 seat · All students eligible</div></div>
+          <span class="badge badge-teal">4 Candidates</span>
+          <span class="badge badge-live">Active</span>
+          <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Enabled</label>
+        </div>
+      </div>
+      <div class="seat-card">
+        <div class="seat-row">
+          <div class="seat-icon" style="background:rgba(0,201,177,.1)">🎭</div>
+          <div style="flex:1"><div style="font-weight:600">Arts Club Secretary</div><div style="font-size:12px;color:var(--text-muted)">1 seat · All students eligible</div></div>
+          <span class="badge badge-teal">3 Candidates</span>
+          <span class="badge badge-live">Active</span>
+          <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Enabled</label>
+        </div>
+      </div>
+      <div class="seat-card">
+        <div class="seat-row">
+          <div class="seat-icon" style="background:rgba(0,201,177,.1)">📰</div>
+          <div style="flex:1"><div style="font-weight:600">Magazine Editor</div><div style="font-size:12px;color:var(--text-muted)">1 seat · All students eligible</div></div>
+          <span class="badge badge-teal">2 Candidates</span>
+          <span class="badge badge-live">Active</span>
+          <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Enabled</label>
+        </div>
+      </div>
+      <div class="seat-card">
+        <div class="seat-row">
+          <div class="seat-icon" style="background:rgba(77,166,255,.1)">🏫</div>
+          <div style="flex:1"><div style="font-weight:600">UUC Representatives</div><div style="font-size:12px;color:var(--text-muted)">2 seats · Each student selects 2 candidates</div></div>
+          <span class="badge badge-teal">8 Candidates</span>
+          <span class="badge badge-live">Active</span>
+          <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Enabled</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- LADY REP -->
+    <div class="seat-cat-header">👩 Lady Representative <span class="badge badge-rose">Female Students Only</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      <div class="seat-card">
+        <div class="seat-row">
+          <div class="seat-icon" style="background:rgba(242,95,122,.1)">👩‍🎓</div>
+          <div style="flex:1"><div style="font-weight:600">Lady Representative</div><div style="font-size:12px;color:var(--text-muted)">2 seats · Female students vote, female students can apply</div></div>
+          <span class="badge badge-rose">5 Candidates</span>
+          <span class="badge badge-live">Active</span>
+          <label style="cursor:pointer"><input type="checkbox" checked style="accent-color:var(--gold)"> Enabled</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPT REPS -->
+    <div class="seat-cat-header">🏫 Department Representatives <span class="badge badge-sky">Dept & Level Specific</span></div>
+    <div id="deptSeats" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+</main>
+
+<div class="modal-overlay" id="addSeatModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">➕ Add Custom Seat</h3>
+      <button class="modal-close" onclick="Modal.close('addSeatModal')">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="form-group">
+        <label class="form-label">Seat Name</label>
+        <input type="text" class="form-input" placeholder="e.g. Sports Secretary">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select">
+          <option>General (All Students)</option>
+          <option>Lady Representative (Female Only)</option>
+          <option>Department Representative</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Number of Seats</label>
+        <input type="number" class="form-input" value="1" min="1" max="5">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="Modal.close('addSeatModal')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="addSeat()">Add Seat</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="../assets/js/electra.js"></script>
+<script>
+// Render department seats
+const depts = ['Computer Science','Mathematics','Physics','Chemistry','English','Commerce'];
+const deptContainer = document.getElementById('deptSeats');
+deptContainer.innerHTML = depts.map(d => `
+  <div class="seat-card">
+    <div style="font-weight:600;font-size:14px;margin-bottom:8px">${d}</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px">
+        <span style="color:var(--teal)">● UG Representative</span>
+        <label style="cursor:pointer;font-size:12px"><input type="checkbox" checked style="accent-color:var(--teal)"> On</label>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px">
+        <span style="color:var(--sky)">● PG Representative</span>
+        <label style="cursor:pointer;font-size:12px"><input type="checkbox" checked style="accent-color:var(--sky)"> On</label>
+      </div>
+    </div>
+  </div>
+`).join('');
+
+let uucCount = 2;
+function adjustUUC(delta) {
+  uucCount = Math.max(1, Math.min(5, uucCount + delta));
+  document.getElementById('uucCount').textContent = uucCount;
+  document.getElementById('uucCountDisplay').textContent = uucCount;
+}
+function saveSettings() { Toast.success('Election settings saved successfully!'); }
+function stopElection() { if(confirm('Stop the election? Voting will close immediately.')) Toast.warning('Election stopped. Review and publish results.'); }
+function addSeat() { Modal.close('addSeatModal'); Toast.success('Custom seat added!'); }
+</script>
+</body>
+</html>

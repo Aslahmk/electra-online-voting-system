@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cast Your Vote — ELECTRA</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<style>
+.stu-topbar {
+  position:fixed;top:0;left:0;right:0;height:64px;
+  background:rgba(8,13,26,.92);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-subtle);
+  display:flex;align-items:center;padding:0 32px;z-index:200;gap:16px;
+}
+.stu-main { padding-top:84px;padding-bottom:80px;max-width:1000px;margin:0 auto;padding-left:24px;padding-right:24px; }
+.vote-steps { display:flex;align-items:center;gap:0;margin-bottom:32px;overflow-x:auto;padding-bottom:4px; }
+.vote-step { display:flex;align-items:center;gap:10px;flex-shrink:0; }
+.step-circle {
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;
+  border:2px solid var(--border-subtle);
+  color:var(--text-muted);background:var(--surface-2);
+  transition:all .3s;
+}
+.step-circle.done    { background:var(--status-live);border-color:var(--status-live);color:white; }
+.step-circle.current { background:var(--gold);border-color:var(--gold);color:var(--midnight); }
+.step-label { font-size:13px;font-weight:500;color:var(--text-muted); }
+.step-label.current { color:var(--gold);font-weight:700; }
+.step-label.done    { color:var(--status-live); }
+.step-connector { width:40px;height:2px;flex-shrink:0;background:var(--border-subtle);margin:0 8px;transition:background .3s; }
+.step-connector.done { background:var(--status-live); }
+.seat-section { margin-bottom:28px; }
+.seat-section-title {
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;background:var(--surface-2);
+  border:1px solid var(--border-subtle);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;border-bottom:none;font-weight:700;
+}
+.seat-candidates {
+  background:var(--surface-card);border:1px solid var(--border-subtle);
+  border-radius:0 0 var(--r-lg) var(--r-lg);padding:20px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:14px;
+}
+.vote-confirm {
+  position:fixed;inset:0;z-index:500;
+  background:rgba(8,13,26,.95);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .4s;
+}
+.vote-confirm.open { opacity:1;pointer-events:all; }
+.confirm-box {
+  background:var(--surface-1);border:1px solid var(--border-gold);
+  border-radius:var(--r-2xl);padding:40px;
+  max-width:580px;width:90%;box-shadow:var(--shadow-gold);
+}
+.vote-success {
+  position:fixed;inset:0;z-index:600;background:var(--midnight);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .5s;text-align:center;padding:24px;
+}
+.vote-success.open { opacity:1;pointer-events:all; }
+.success-icon { font-size:72px;animation:bounce-in .6s var(--ease-out) .2s both; }
+@keyframes bounce-in { 0%{transform:scale(0);opacity:0;} 70%{transform:scale(1.1);} 100%{transform:scale(1);opacity:1;} }
+.vote-footer {
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(8,13,26,.95);backdrop-filter:blur(16px);
+  border-top:1px solid var(--border-subtle);
+  padding:14px 32px;display:flex;align-items:center;justify-content:space-between;z-index:100;
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<div class="stu-topbar">
+  <div style="font-family:var(--font-display);font-weight:700;font-size:1.1rem"><span style="color:var(--gold)">E</span>LECTRA</div>
+  <div style="margin-left:12px">
+    <span style="font-size:13px;color:var(--text-muted)">Voting as:</span>
+    <span style="font-size:13px;font-weight:600;margin-left:6px">Arjun Suresh · UG · Computer Science</span>
+  </div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+    <span class="badge badge-live"><span class="status-dot live"></span> Election Live</span>
+    <span style="font-family:var(--font-mono);color:var(--gold);font-size:13px" id="topTimer">03:24:00</span>
+    <a href="#" class="stu-nav-btn logout-btn" style="padding:4px 8px;margin-left:8px;color:var(--rose);">Logout</a>
+  </div>
+</div>
+
+<main class="stu-main">
+  <div class="page-header animate-up" style="margin-bottom:24px">
+    <div class="section-eyebrow">Union Election 2024–25</div>
+    <h1 class="page-title">Cast Your Vote</h1>
+    <p class="page-sub">Select your preferred candidates for each eligible seat. Review carefully before submitting.</p>
+  </div>
+
+  <!-- STEPS -->
+  <div class="vote-steps animate-up-1">
+    <div class="vote-step"><div class="step-circle current" id="sc1">1</div><div class="step-label current" id="sl1">General Seats</div></div>
+    <div class="step-connector" id="conn1"></div>
+    <div class="vote-step"><div class="step-circle" id="sc2">2</div><div class="step-label" id="sl2">UUC Reps</div></div>
+    <div class="step-connector" id="conn2"></div>
+    <div class="vote-step"><div class="step-circle" id="sc3">3</div><div class="step-label" id="sl3">Dept Rep</div></div>
+    <div class="step-connector" id="conn3"></div>
+    <div class="vote-step"><div class="step-circle" id="sc4">4</div><div class="step-label" id="sl4">Review &amp; Submit</div></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div id="step1">
+    <div class="seat-section animate-up-2">
+      <div class="seat-section-title"><span>👑</span><span>Chairman</span><span style="font-weight:400;font-size:13px;color:var(--text-muted);margin-left:4px">· Select 1 candidate</span><span class="badge badge-muted" style="margin-left:auto" id="chairmanSelected">0/1 selected</span></div>
+      <div class="seat-candidates" id="chairmanCandidates"></div>
+    </div>
+    <div class="seat-section animate-up-3">
+      <div class="seat-section-title"><span>🤝</span><span>Vice Chairman</span><span style="font-weight:400;font-size:13px;color:var(--text-muted);margin-left:4px">· Select 1 candidate</span><span class="badge badge-muted" style="margin-left:auto" id="vcSelected">0/1 selected</span></div>
+      <div class="seat-candidates" id="vcCandidates"></div>
+    </div>
+    <div class="seat-section animate-up-4">
+      <div class="seat-section-title"><span>📋</span><span>General Secretary</span><span style="font-weight:400;font-size:13px;color:var(--text-muted);margin-left:4px">· Select 1 candidate</span><span class="badge badge-muted" style="margin-left:auto" id="genSecSelected">0/1 selected</span></div>
+      <div class="seat-candidates" id="genSecCandidates"></div>
+    </div>
+    <div class="seat-section">
+      <div class="seat-section-title"><span>🎭</span><span>Arts Club Secretary</span><span style="font-weight:400;font-size:13px;color:var(--text-muted);margin-left:4px">· Select 1 candidate</span><span class="badge badge-muted" style="margin-left:auto" id="artsSelected">0/1 selected</span></div>
+      <div class="seat-candidates" id="artsCandidates"></div>
+    </div>
+    <div class="seat-section">
+      <div class="seat-section-title"><span>📰</span><span>Magazine Editor</span><span style="font-weight:400;font-size:13px;color:var(--text-muted);margin-left:4px">· Select 1 candidate</span><span class="badge badge-muted" style="margin-left:auto" id="magSelected">0/1 selected</span></div>
+      <div class="seat-candidates" id="magCandidates"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-primary btn-lg" onclick="goStep(2)">Next: UUC Representatives →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2" style="display:none">
+    <div class="seat-section animate-up">
+      <div class="seat-section-title"><span>🏫</span><span>UUC Representatives</span><span style="font-weight:400;font-size:13px;color:var(--text-muted);margin-left:4px">· Select exactly 2 candidates</span><span class="badge badge-gold" style="margin-left:auto" id="uucSelected">0/2 selected</span></div>
+      <div class="seat-candidates" id="uucCandidates"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px">
+      <button class="btn btn-ghost btn-lg" onclick="goStep(1)">← Back</button>
+      <button class="btn btn-primary btn-lg" onclick="goStep(3)">Next: Department Rep →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="step3" style="display:none">
+    <div class="seat-section animate-up">
+      <div class="seat-section-title"><span>🖥️</span><span>CS UG Department Representative</span><span style="font-weight:400;font-size:13px;color:var(--text-muted);margin-left:4px">· Select 1 candidate</span><span class="badge badge-teal" style="margin-left:auto;font-size:11px">UG Computer Science Only</span></div>
+      <div class="seat-candidates" id="deptCandidates"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px">
+      <button class="btn btn-ghost btn-lg" onclick="goStep(2)">← Back</button>
+      <button class="btn btn-primary btn-lg" onclick="goStep(4)">Review My Votes →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: REVIEW -->
+  <div id="step4" style="display:none">
+    <div class="card animate-up" style="margin-bottom:20px">
+      <h3 style="margin-bottom:20px">📋 Review Your Selections</h3>
+      <div id="reviewContent" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+    <div style="background:rgba(233,168,50,.06);border:1px solid var(--border-gold);border-radius:var(--r-md);padding:14px 18px;margin-bottom:20px">
+      <div style="font-weight:700;font-size:14px;margin-bottom:4px">⚠️ Your vote is final once submitted</div>
+      <div style="font-size:13px;color:var(--text-muted)">You cannot change your vote after submission. Please review carefully.</div>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      <button class="btn btn-ghost btn-lg" onclick="goStep(3)">← Change Votes</button>
+      <button class="btn btn-primary btn-lg" onclick="showConfirm()">🗳️ Submit My Vote</button>
+    </div>
+  </div>
+</main>
+
+<!-- VOTE FOOTER -->
+<div class="vote-footer">
+  <div style="font-size:13px;color:var(--text-muted)">Step <span id="currentStepNum">1</span> of 4</div>
+  <div class="progress-bar" style="width:300px"><div class="progress-fill" id="voteProgress" style="width:25%"></div></div>
+  <div style="font-size:13px;color:var(--text-muted)" id="selectionCount">0 of 7 selections made</div>
+</div>
+
+<!-- CONFIRMATION OVERLAY -->
+<div class="vote-confirm" id="voteConfirm">
+  <div class="confirm-box">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:48px;margin-bottom:12px">🗳️</div>
+      <h3 style="font-family:var(--font-display);font-size:1.6rem;margin-bottom:8px">Confirm Your Vote</h3>
+      <p style="color:var(--text-muted);font-size:14px">Your selections will be permanently recorded. This cannot be undone.</p>
+    </div>
+    <div id="confirmList" style="display:flex;flex-direction:column;gap:0;margin-bottom:24px;background:var(--surface-2);border-radius:var(--r-md);padding:4px 16px"></div>
+    <div style="display:flex;gap:12px">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="closeConfirm()">← Go Back</button>
+      <button class="btn btn-primary btn-lg" style="flex:2;justify-content:center" onclick="submitVote()">✅ Yes, Cast My Vote</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="vote-success" id="voteSuccess">
+  <div class="success-icon">🏆</div>
+  <h2 style="font-family:var(--font-display);font-size:2.5rem;margin:20px 0 12px">Vote Cast!</h2>
+  <p style="color:var(--text-secondary);font-size:1.1rem;max-width:400px;margin-bottom:8px">Your vote has been successfully and securely recorded.</p>
+  <p style="font-size:13px;color:var(--text-muted);margin-bottom:36px">Results will be published after the election closes at 4:00 PM.</p>
+  <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);background:var(--surface-2);padding:10px 20px;border-radius:var(--r-md);margin-bottom:32px" id="voteReceipt">Vote ID: —</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+    <a href="stu-results.html" class="btn btn-primary btn-lg">📊 View Live Results</a>
+    <a href="dashboard.html" class="btn btn-ghost btn-lg">🏠 Back to Dashboard</a>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="../assets/js/electra.js"></script>
+<script>
+const candidates = {
+  chairman: [
+    {id:'c1',name:'Rohan Kumar',   dept:'Computer Science',level:'UG',initial:'R'},
+    {id:'c2',name:'Arun Pillai',   dept:'Chemistry',       level:'PG',initial:'A'},
+    {id:'c3',name:'Vishnu Raj',    dept:'Computer Science',level:'PG',initial:'V'},
+  ],
+  vc: [
+    {id:'v1',name:'Priya Nair',    dept:'Computer Science',level:'UG',initial:'P'},
+    {id:'v2',name:'Meera Thomas',  dept:'Commerce',        level:'UG',initial:'M'},
+  ],
+  genSec: [
+    {id:'g1',name:'Arjun Suresh',  dept:'Computer Science',level:'UG',initial:'A'},
+    {id:'g2',name:'Kavya Rajan',   dept:'Physics',         level:'UG',initial:'K'},
+    {id:'g3',name:'Rahul Mohan',   dept:'Physics',         level:'UG',initial:'R'},
+    {id:'g4',name:'Divya Krishnan',dept:'Mathematics',     level:'PG',initial:'D'},
+  ],
+  arts: [
+    {id:'a1',name:'Sneha Menon',   dept:'English',         level:'PG',initial:'S'},
+    {id:'a2',name:'Kavya Rajan',   dept:'Physics',         level:'UG',initial:'K'},
+    {id:'a3',name:'Meera Thomas',  dept:'Commerce',        level:'UG',initial:'M'},
+  ],
+  mag: [
+    {id:'m1',name:'Divya Krishnan',dept:'Mathematics',     level:'PG',initial:'D'},
+    {id:'m2',name:'Rahul Mohan',   dept:'Physics',         level:'UG',initial:'R'},
+  ],
+  uuc: [
+    {id:'u1',name:'Sneha Menon',   dept:'English',         level:'PG',initial:'S'},
+    {id:'u2',name:'Rohan Kumar',   dept:'Computer Science',level:'UG',initial:'R'},
+    {id:'u3',name:'Arjun Suresh',  dept:'Computer Science',level:'UG',initial:'A'},
+    {id:'u4',name:'Priya Nair',    dept:'Computer Science',level:'UG',initial:'P'},
+    {id:'u5',name:'Vishnu Raj',    dept:'Computer Science',level:'PG',initial:'V'},
+    {id:'u6',name:'Kavya Rajan',   dept:'Physics',         level:'UG',initial:'K'},
+  ],
+  dept: [
+    {id:'d1',name:'Arjun Suresh',  dept:'Computer Science',level:'UG',initial:'A'},
+    {id:'d2',name:'Rohan Kumar',   dept:'Computer Science',level:'UG',initial:'R'},
+  ],
+};
+
+const votes = { chairman:null, vc:null, genSec:null, arts:null, mag:null, uuc:[], dept:null };
+
+function renderCandidate(c, seat, multi=false) {
+  return `<div class="candidate-card" id="card-${seat}-${c.id}" onclick="selectCandidate('${seat}','${c.id}',${multi})">
+    <div style="width:64px;height:64px;border-radius:50%;background:var(--navy-light);border:2px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:24px;color:var(--gold)">${c.initial}</div>
+    <div class="candidate-name">${c.name}</div>
+    <div class="candidate-dept" style="font-size:11px">${c.dept}</div>
+    <span class="badge ${c.level==='UG'?'badge-teal':'badge-sky'}" style="font-size:10px">${c.level}</span>
+    <div id="check-${seat}-${c.id}" style="display:none;margin-top:4px;color:var(--status-live);font-weight:700">✓ Selected</div>
+  </div>`;
+}
+
+document.getElementById('chairmanCandidates').innerHTML = candidates.chairman.map(c=>renderCandidate(c,'chairman')).join('');
+document.getElementById('vcCandidates').innerHTML       = candidates.vc.map(c=>renderCandidate(c,'vc')).join('');
+document.getElementById('genSecCandidates').innerHTML   = candidates.genSec.map(c=>renderCandidate(c,'genSec')).join('');
+document.getElementById('artsCandidates').innerHTML     = candidates.arts.map(c=>renderCandidate(c,'arts')).join('');
+document.getElementById('magCandidates').innerHTML      = candidates.mag.map(c=>renderCandidate(c,'mag')).join('');
+document.getElementById('uucCandidates').innerHTML      = candidates.uuc.map(c=>renderCandidate(c,'uuc',true)).join('');
+document.getElementById('deptCandidates').innerHTML     = candidates.dept.map(c=>renderCandidate(c,'dept')).join('');
+
+function selectCandidate(seat, id, multi) {
+  if (multi) {
+    const idx = votes.uuc.indexOf(id);
+    if (idx > -1) {
+      votes.uuc.splice(idx,1);
+      document.getElementById(`card-uuc-${id}`).classList.remove('selected');
+      document.getElementById(`check-uuc-${id}`).style.display='none';
+    } else {
+      if (votes.uuc.length >= 2) { Toast.warning('You can only select 2 UUC candidates'); return; }
+      votes.uuc.push(id);
+      document.getElementById(`card-uuc-${id}`).classList.add('selected');
+      document.getElementById(`check-uuc-${id}`).style.display='block';
+    }
+    const badge = document.getElementById('uucSelected');
+    badge.textContent = `${votes.uuc.length}/2 selected`;
+    badge.className = `badge ${votes.uuc.length===2?'badge-teal':'badge-gold'}`;
+  } else {
+    const prev = votes[seat];
+    if (prev) {
+      document.getElementById(`card-${seat}-${prev}`).classList.remove('selected');
+      document.getElementById(`check-${seat}-${prev}`).style.display='none';
+    }
+    votes[seat] = id;
+    document.getElementById(`card-${seat}-${id}`).classList.add('selected');
+    document.getElementById(`check-${seat}-${id}`).style.display='block';
+    const badgeMap = {chairman:'chairmanSelected',vc:'vcSelected',genSec:'genSecSelected',arts:'artsSelected',mag:'magSelected'};
+    if (badgeMap[seat]) {
+      const b = document.getElementById(badgeMap[seat]);
+      b.textContent = '1/1 selected'; b.className='badge badge-teal';
+    }
+  }
+  updateProgress();
+}
+
+function countSelections() {
+  return [votes.chairman,votes.vc,votes.genSec,votes.arts,votes.mag,votes.dept].filter(Boolean).length + votes.uuc.length;
+}
+function updateProgress() {
+  const done = countSelections();
+  document.getElementById('selectionCount').textContent = `${done} of 7 selections made`;
+}
+
+let currentStep = 1;
+function goStep(n) {
+  if (n>1 && (!votes.chairman||!votes.vc||!votes.genSec||!votes.arts||!votes.mag)) { Toast.warning('Please complete all General Seat selections'); return; }
+  if (n>2 && votes.uuc.length<2) { Toast.warning('Please select exactly 2 UUC candidates'); return; }
+  if (n>3 && !votes.dept) { Toast.warning('Please select your Department Representative'); return; }
+
+  for (let i=1;i<=4;i++) {
+    const el=document.getElementById(`step${i}`); if(el) el.style.display=i===n?'block':'none';
+    const sc=document.getElementById(`sc${i}`),sl=document.getElementById(`sl${i}`);
+    if(sc&&sl){
+      sc.className='step-circle'+(i<n?' done':i===n?' current':'');
+      sl.className='step-label' +(i<n?' done':i===n?' current':'');
+      sc.textContent=i<n?'✓':i;
+    }
+    const conn=document.getElementById(`conn${i}`);
+    if(conn) conn.className='step-connector'+(i<n?' done':'');
+  }
+  currentStep=n;
+  document.getElementById('currentStepNum').textContent=n;
+  document.getElementById('voteProgress').style.width=`${(n/4)*100}%`;
+  if(n===4) buildReview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function candidateName(seat,id){
+  return (candidates[seat]||[]).find(c=>c.id===id)?.name||id;
+}
+
+function buildReview() {
+  const rows=[
+    {label:'👑 Chairman',         val:candidateName('chairman',votes.chairman)},
+    {label:'🤝 Vice Chairman',    val:candidateName('vc',votes.vc)},
+    {label:'📋 General Secretary',val:candidateName('genSec',votes.genSec)},
+    {label:'🎭 Arts Club Sec.',   val:candidateName('arts',votes.arts)},
+    {label:'📰 Magazine Editor',  val:candidateName('mag',votes.mag)},
+    {label:'🏫 UUC Reps (×2)',    val:votes.uuc.map(id=>candidateName('uuc',id)).join(' & ')},
+    {label:'🖥️ CS UG Dept Rep',  val:candidateName('dept',votes.dept)},
+  ];
+  const html = rows.map(r=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface-2);border-radius:var(--r-md)">
+      <span style="font-size:13px;color:var(--text-muted)">${r.label}</span>
+      <strong style="font-size:14px">${r.val}</strong>
+    </div>`).join('');
+  document.getElementById('reviewContent').innerHTML = html;
+  document.getElementById('confirmList').innerHTML = rows.map(r=>`
+    <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0;border-bottom:1px solid var(--border-subtle)">
+      <span style="color:var(--text-muted)">${r.label}</span><strong>${r.val}</strong>
+    </div>`).join('');
+}
+
+function showConfirm(){document.getElementById('voteConfirm').classList.add('open');}
+function closeConfirm(){document.getElementById('voteConfirm').classList.remove('open');}
+
+function submitVote(){
+  closeConfirm();
+  const id='VOTE-'+Date.now().toString(36).toUpperCase();
+  document.getElementById('voteReceipt').textContent=`Vote ID: ${id}`;
+  setTimeout(()=>document.getElementById('voteSuccess').classList.add('open'),300);
+}
+
+const endTime = new Date(Date.now()+(3*3600+24*60)*1000);
+ElectionTimer.start(endTime,t=>{
+  document.getElementById('topTimer').textContent=`${t.hours}:${t.minutes}:${t.seconds}`;
+});
+</script>
+</body>
+</html>

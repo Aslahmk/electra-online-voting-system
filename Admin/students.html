@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Management — ELECTRA Admin</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-mark">E</div>
+    <div class="sidebar-logo-text"><div class="sidebar-logo-title">ELECTRA</div><div class="sidebar-logo-sub">ADMIN PANEL</div></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    <div class="nav-section-label">Students</div>
+    <a href="students.html" class="nav-item active"><span class="nav-icon">👥</span><span>Student Management</span></a>
+    <div class="nav-section-label">Election</div>
+    <a href="election-setup.html" class="nav-item"><span class="nav-icon">⚙️</span><span>Election Setup</span></a>
+    <a href="seat-management.html" class="nav-item"><span class="nav-icon">🏛️</span><span>Seat Management</span></a>
+    <a href="candidate-approval.html" class="nav-item"><span class="nav-icon">✅</span><span>Candidate Approval</span><span class="nav-badge">3</span></a>
+    <div class="nav-section-label">Results</div>
+    <a href="results.html" class="nav-item"><span class="nav-icon">🏆</span><span>Results &amp; Publishing</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--navy-light);border:2px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;flex-shrink:0">A</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name">Admin User</div><div class="sidebar-user-role">College Administrator</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- TOPBAR -->
+<header class="topbar" id="topbar">
+  <button onclick="Sidebar.toggle()" class="topbar-btn" style="margin-right:8px">☰</button>
+  <div class="topbar-search">
+    <div class="input-group">
+      <span class="input-icon" style="font-size:14px">🔍</span>
+      <input type="search" class="form-input" id="studentSearch" placeholder="Search by name, register number, department…" style="padding-left:38px" oninput="DataTable.filter('studentTable', this.value)">
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-primary btn-sm" onclick="Modal.open('addStudentModal')">+ Add Student</button>
+  </div>
+</header>
+
+<main class="main-content">
+
+  <div class="page-header flex-between animate-up">
+    <div>
+      <div class="section-eyebrow" style="margin-bottom:4px">St. Xavier's College</div>
+      <h1 class="page-title">Student Management</h1>
+      <p class="page-sub">Manage all registered students, their departments, and login credentials.</p>
+    </div>
+    <div class="flex gap-sm">
+      <button class="btn btn-ghost" onclick="Modal.open('csvModal')">📤 Import CSV</button>
+      <button class="btn btn-secondary" onclick="exportStudents()">📥 Export List</button>
+      <button class="btn btn-primary" onclick="Modal.open('addStudentModal')">+ Add Student</button>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="grid-4 animate-up-1" style="margin-bottom:24px">
+    <div class="card-stat">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Total Students</div>
+      <div style="font-size:1.8rem;font-weight:700"><span data-count="2012">0</span></div>
+    </div>
+    <div class="card-stat teal">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">UG Students</div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--teal)"><span data-count="1540">0</span></div>
+    </div>
+    <div class="card-stat sky">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">PG Students</div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--sky)"><span data-count="472">0</span></div>
+    </div>
+    <div class="card-stat rose">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Female Students</div>
+      <div style="font-size:1.8rem;font-weight:700;color:var(--rose)"><span data-count="1187">0</span></div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="card animate-up-2" style="padding:16px 20px;margin-bottom:16px">
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--text-muted);font-weight:600">Filters:</span>
+      <select class="form-select" style="width:auto;padding:7px 14px;font-size:13px" id="filterDept" onchange="applyFilters()">
+        <option value="">All Departments</option>
+        <option>Computer Science</option>
+        <option>Mathematics</option>
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>English</option>
+        <option>Commerce</option>
+      </select>
+      <select class="form-select" style="width:auto;padding:7px 14px;font-size:13px" id="filterLevel" onchange="applyFilters()">
+        <option value="">UG &amp; PG</option>
+        <option>UG</option>
+        <option>PG</option>
+      </select>
+      <select class="form-select" style="width:auto;padding:7px 14px;font-size:13px" id="filterGender" onchange="applyFilters()">
+        <option value="">All Genders</option>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+      <button class="btn btn-ghost btn-sm" onclick="clearFilters()">✕ Clear</button>
+      <span style="margin-left:auto;font-size:13px;color:var(--text-muted)" id="filterCount">Showing 2,012 students</span>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card animate-up-3" style="padding:0">
+    <div class="table-wrap">
+      <table class="data-table" id="studentTable">
+        <thead>
+          <tr>
+            <th style="padding-left:20px">
+              <input type="checkbox" id="selectAll" style="accent-color:var(--gold)" onchange="toggleSelectAll(this)">
+            </th>
+            <th onclick="DataTable.sort('studentTable',1)" style="cursor:pointer">Student ↕</th>
+            <th onclick="DataTable.sort('studentTable',2)" style="cursor:pointer">Reg. Number ↕</th>
+            <th>Department</th>
+            <th>Level</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Security Code</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentTbody">
+          <!-- Rows rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+    <!-- PAGINATION -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border-subtle)">
+      <span style="font-size:13px;color:var(--text-muted)">Showing 1–20 of 2,012 students</span>
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm">← Prev</button>
+        <button class="btn btn-primary btn-sm">1</button>
+        <button class="btn btn-ghost btn-sm">2</button>
+        <button class="btn btn-ghost btn-sm">3</button>
+        <span style="align-self:center;color:var(--text-muted);padding:0 4px">…</span>
+        <button class="btn btn-ghost btn-sm">101</button>
+        <button class="btn btn-ghost btn-sm">Next →</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ADD STUDENT MODAL -->
+<div class="modal-overlay" id="addStudentModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-header">
+      <h3 class="modal-title">👤 Add New Student</h3>
+      <button class="modal-close" onclick="Modal.close('addStudentModal')">✕</button>
+    </div>
+    <form id="addStudentForm" novalidate>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" class="form-input" id="sName" placeholder="Student full name">
+          <span class="form-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Register Number *</label>
+          <input type="text" class="form-input" id="sReg" placeholder="2024CS001">
+          <span class="form-error"></span>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Email *</label>
+          <input type="email" class="form-input" id="sEmail" placeholder="student@college.edu">
+          <span class="form-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Department *</label>
+          <select class="form-select" id="sDept">
+            <option value="">Select Department</option>
+            <option>Computer Science</option>
+            <option>Mathematics</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>English</option>
+            <option>Commerce</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Course Type *</label>
+          <select class="form-select" id="sCourse">
+            <option value="">Select Level</option>
+            <option value="UG">UG (Undergraduate)</option>
+            <option value="PG">PG (Postgraduate)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gender *</label>
+          <select class="form-select" id="sGender">
+            <option value="">Select Gender</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- AUTO-GENERATED CREDENTIALS PREVIEW -->
+      <div style="background:var(--surface-2);border:1px solid var(--border-subtle);border-radius:var(--r-md);padding:16px;margin-bottom:20px" id="credPreview" style="display:none">
+        <div style="font-size:12px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">🔑 Auto-Generated Credentials</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <div style="font-size:11px;color:var(--text-muted)">Password</div>
+            <div style="font-family:var(--font-mono);font-size:14px;color:var(--teal)" id="genPassword">—</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-muted)">Security Code</div>
+            <div style="font-family:var(--font-mono);font-size:14px;color:var(--gold)" id="genCode">—</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px">These will be emailed to the student automatically.</div>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button type="button" class="btn btn-ghost" style="flex:1;justify-content:center" onclick="Modal.close('addStudentModal')">Cancel</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="previewCredentials()">Preview Credentials</button>
+        <button type="submit" class="btn btn-primary" style="flex:1;justify-content:center">Add Student</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- CSV IMPORT MODAL -->
+<div class="modal-overlay" id="csvModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <h3 class="modal-title">📤 Bulk Import via CSV</h3>
+      <button class="modal-close" onclick="Modal.close('csvModal')">✕</button>
+    </div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      Upload a CSV or Excel file with student data. Auto-credentials will be generated for all imported students.
+    </p>
+
+    <div class="upload-zone" id="csvUploadZone">
+      <div class="upload-icon">📂</div>
+      <div style="font-weight:600;margin-bottom:4px">Drag &amp; drop your CSV file here</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">or click to browse — .csv, .xlsx supported</div>
+      <button class="btn btn-ghost btn-sm">Choose File</button>
+    </div>
+
+    <div style="margin-top:20px">
+      <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Required CSV Columns</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span class="badge badge-muted">student_name</span>
+        <span class="badge badge-muted">register_number</span>
+        <span class="badge badge-muted">email</span>
+        <span class="badge badge-muted">department</span>
+        <span class="badge badge-muted">course_type</span>
+        <span class="badge badge-muted">gender</span>
+      </div>
+      <a href="#" style="font-size:12px;display:block;margin-top:10px">📥 Download sample template</a>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:24px">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="Modal.close('csvModal')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="processCSV()">Import Students</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="../assets/js/electra.js"></script>
+<script>
+// DEMO STUDENTS DATA
+const students = [
+  { id:1, name:'Arjun Suresh',      reg:'2024CS001', dept:'Computer Science', level:'UG', gender:'M', email:'arjun@sxc.edu',   code:'482931' },
+  { id:2, name:'Priya Nair',        reg:'2024CS002', dept:'Computer Science', level:'UG', gender:'F', email:'priya@sxc.edu',   code:'583021' },
+  { id:3, name:'Rohan Kumar',       reg:'2024MA001', dept:'Mathematics',      level:'UG', gender:'M', email:'rohan@sxc.edu',   code:'193847' },
+  { id:4, name:'Kavya Rajan',       reg:'2024PH001', dept:'Physics',          level:'UG', gender:'F', email:'kavya@sxc.edu',   code:'374920' },
+  { id:5, name:'Meera Thomas',      reg:'2024CO001', dept:'Commerce',         level:'UG', gender:'F', email:'meera@sxc.edu',   code:'281930' },
+  { id:6, name:'Arun Pillai',       reg:'2024CH001', dept:'Chemistry',        level:'PG', gender:'M', email:'arun@sxc.edu',    code:'492010' },
+  { id:7, name:'Sneha Menon',       reg:'2024EN001', dept:'English',          level:'PG', gender:'F', email:'sneha@sxc.edu',   code:'384720' },
+  { id:8, name:'Vishnu Raj',        reg:'2024CS003', dept:'Computer Science', level:'PG', gender:'M', email:'vishnu@sxc.edu',  code:'182930' },
+  { id:9, name:'Divya Krishnan',    reg:'2024MA002', dept:'Mathematics',      level:'PG', gender:'F', email:'divya@sxc.edu',   code:'591820' },
+  { id:10, name:'Rahul Mohan',      reg:'2024PH002', dept:'Physics',          level:'UG', gender:'M', email:'rahul@sxc.edu',   code:'473029' },
+];
+
+function renderStudents(list) {
+  const tbody = document.getElementById('studentTbody');
+  tbody.innerHTML = list.map(s => `
+    <tr>
+      <td style="padding-left:20px"><input type="checkbox" style="accent-color:var(--gold)" class="row-check" value="${s.id}"></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--navy-light);border:1.5px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--gold);font-size:13px;flex-shrink:0">${s.name[0]}</div>
+          <span style="font-weight:600">${s.name}</span>
+        </div>
+      </td>
+      <td><span style="font-family:var(--font-mono);font-size:13px">${s.reg}</span></td>
+      <td>${s.dept}</td>
+      <td><span class="badge ${s.level === 'UG' ? 'badge-teal' : 'badge-sky'}">${s.level}</span></td>
+      <td><span class="badge ${s.gender === 'F' ? 'badge-rose' : 'badge-muted'}">${s.gender === 'F' ? '♀ Female' : '♂ Male'}</span></td>
+      <td style="color:var(--text-muted);font-size:13px">${s.email}</td>
+      <td><span style="font-family:var(--font-mono);background:var(--surface-3);padding:3px 8px;border-radius:4px;font-size:12px">${s.code}</span></td>
+      <td><span class="badge badge-live"><span class="status-dot live" style="width:6px;height:6px"></span> Active</span></td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm" onclick="editStudent(${s.id})" title="Edit">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteStudent(${s.id})" title="Remove">🗑</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+renderStudents(students);
+
+function previewCredentials() {
+  const name = document.getElementById('sName').value;
+  const reg  = document.getElementById('sReg').value;
+  if (!name || !reg) { Toast.warning('Enter name and register number first'); return; }
+  const pwd  = PasswordGen.forStudent(name, reg);
+  const code = PasswordGen.securityCode();
+  document.getElementById('genPassword').textContent = pwd;
+  document.getElementById('genCode').textContent = code;
+  document.getElementById('credPreview').style.display = 'block';
+}
+
+document.getElementById('addStudentForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  Toast.success('Student added! Credentials sent via email.');
+  Modal.close('addStudentModal');
+  this.reset();
+  document.getElementById('credPreview').style.display = 'none';
+});
+
+function toggleSelectAll(cb) {
+  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+}
+function editStudent(id)   { Toast.info(`Edit student ${id} — form opens`); }
+function deleteStudent(id) { if(confirm('Remove this student?')) Toast.success('Student removed.'); }
+function exportStudents()  { Toast.info('Preparing export…'); }
+function processCSV()      { Modal.close('csvModal'); Toast.success('CSV imported! 48 students added.'); }
+function clearFilters()    {
+  ['filterDept','filterLevel','filterGender'].forEach(id => document.getElementById(id).value = '');
+  DataTable.filter('studentTable', '');
+}
+
+UploadZone.init('csvUploadZone', (file) => {
+  Toast.info(`File "${file.name}" ready to import.`);
+});
+</script>
+</body>
+</html>

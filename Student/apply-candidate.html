@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply as Candidate — ELECTRA</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<style>
+.stu-topbar{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(8,13,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 32px;z-index:200;gap:16px;}
+.stu-nav{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:var(--r-full);}
+.stu-nav-btn{padding:7px 16px;border-radius:var(--r-full);font-size:13px;font-weight:500;color:var(--text-muted);background:transparent;border:none;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;}
+.stu-nav-btn.active,.stu-nav-btn:hover{background:var(--surface-card);color:var(--gold);}
+.stu-main{padding-top:84px;padding-bottom:60px;max-width:800px;margin:0 auto;padding-left:24px;padding-right:24px;}
+
+.seat-option {
+  background:var(--surface-2);border:1.5px solid var(--border-subtle);
+  border-radius:var(--r-lg);padding:18px 20px;
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer;transition:all .25s var(--ease-out);
+}
+.seat-option:hover { border-color:var(--border-gold);background:var(--gold-glow); }
+.seat-option.selected { border-color:var(--gold);background:var(--gold-glow);box-shadow:var(--shadow-gold); }
+.seat-option.disabled { opacity:.4;cursor:not-allowed;pointer-events:none; }
+.seat-radio { width:20px;height:20px;border-radius:50%;border:2px solid var(--border-mid);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s; }
+.seat-option.selected .seat-radio { border-color:var(--gold);background:var(--gold); }
+.seat-option.selected .seat-radio::after { content:''; width:8px;height:8px;border-radius:50%;background:var(--midnight); }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<div class="stu-topbar">
+  <div style="font-family:var(--font-display);font-weight:700;font-size:1.1rem"><span style="color:var(--gold)">E</span>LECTRA</div>
+  <div class="stu-nav">
+    <a href="dashboard.html" class="stu-nav-btn">🏠 Dashboard</a>
+    <a href="voting.html" class="stu-nav-btn">🗳️ Vote Now</a>
+    <a href="apply-candidate.html" class="stu-nav-btn active">🎯 Apply</a>
+    <a href="stu-results.html" class="stu-nav-btn">🏆 Results</a>
+  </div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+    <span class="badge badge-gold">Application Open</span>
+    <span style="font-size:13px;color:var(--text-muted)">Arjun Suresh</span>
+    <a href="#" class="stu-nav-btn logout-btn" style="padding:4px 8px;margin-left:8px;color:var(--rose);">Logout</a>
+  </div>
+</div>
+
+<main class="stu-main">
+  <div class="page-header animate-up">
+    <div class="section-eyebrow">Candidate Application</div>
+    <h1 class="page-title">Apply as a Candidate</h1>
+    <p class="page-sub">Submit your application for a seat in the Union Election 2024–25. Admin will review your application.</p>
+  </div>
+
+  <!-- ELIGIBILITY NOTICE -->
+  <div style="background:var(--teal-dim);border:1px solid rgba(0,201,177,.3);border-radius:var(--r-lg);padding:16px 20px;margin-bottom:24px" class="animate-up-1">
+    <div style="font-weight:700;color:var(--teal);margin-bottom:6px">✅ Your Eligibility</div>
+    <div style="font-size:14px;color:var(--text-secondary);line-height:1.8">
+      As a <strong style="color:var(--text-primary)">UG Male student from Computer Science</strong>, you are eligible to apply for:
+      <strong style="color:var(--teal)"> General seats, UUC Representative, and CS UG Department Representative.</strong>
+      <br>Lady Representative applications are open to female students only.
+    </div>
+  </div>
+
+  <form id="applyForm">
+    <!-- STEP 1: SELECT SEAT -->
+    <div class="card animate-up-2" style="margin-bottom:20px">
+      <h4 style="margin-bottom:16px">🏛️ Step 1 — Select the Seat you want to contest</h4>
+      <div style="display:flex;flex-direction:column;gap:10px" id="seatOptions">
+
+        <div style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;padding:8px 0 4px">General Seats</div>
+        <div class="seat-option" onclick="selectSeat(this,'Chairman')">
+          <div class="seat-radio"></div>
+          <div style="font-size:20px">👑</div>
+          <div><div style="font-weight:600">Chairman</div><div style="font-size:12px;color:var(--text-muted)">Open to all students</div></div>
+        </div>
+        <div class="seat-option" onclick="selectSeat(this,'Vice Chairman')">
+          <div class="seat-radio"></div>
+          <div style="font-size:20px">🤝</div>
+          <div><div style="font-weight:600">Vice Chairman</div><div style="font-size:12px;color:var(--text-muted)">Open to all students</div></div>
+        </div>
+        <div class="seat-option" onclick="selectSeat(this,'General Secretary')">
+          <div class="seat-radio"></div>
+          <div style="font-size:20px">📋</div>
+          <div><div style="font-weight:600">General Secretary</div><div style="font-size:12px;color:var(--text-muted)">Open to all students</div></div>
+        </div>
+        <div class="seat-option" onclick="selectSeat(this,'Arts Club Secretary')">
+          <div class="seat-radio"></div>
+          <div style="font-size:20px">🎭</div>
+          <div><div style="font-weight:600">Arts Club Secretary</div><div style="font-size:12px;color:var(--text-muted)">Open to all students</div></div>
+        </div>
+        <div class="seat-option" onclick="selectSeat(this,'Magazine Editor')">
+          <div class="seat-radio"></div>
+          <div style="font-size:20px">📰</div>
+          <div><div style="font-weight:600">Magazine Editor</div><div style="font-size:12px;color:var(--text-muted)">Open to all students</div></div>
+        </div>
+        <div class="seat-option" onclick="selectSeat(this,'UUC Representative')">
+          <div class="seat-radio"></div>
+          <div style="font-size:20px">🏫</div>
+          <div><div style="font-weight:600">UUC Representative</div><div style="font-size:12px;color:var(--text-muted)">Open to all students · 2 seats</div></div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;padding:8px 0 4px">Department Seat</div>
+        <div class="seat-option" onclick="selectSeat(this,'CS UG Department Representative')">
+          <div class="seat-radio"></div>
+          <div style="font-size:20px">🖥️</div>
+          <div><div style="font-weight:600">CS UG Department Representative</div><div style="font-size:12px;color:var(--text-muted)">UG Computer Science students only</div></div>
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.08em;padding:8px 0 4px">Lady Representative</div>
+        <div class="seat-option disabled" title="Female students only">
+          <div class="seat-radio"></div>
+          <div style="font-size:20px">👩</div>
+          <div><div style="font-weight:600">Lady Representative</div><div style="font-size:12px;color:var(--text-muted)">Female students only · Not eligible</div></div>
+          <span class="badge badge-muted" style="margin-left:auto">Not Eligible</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: PROFILE PHOTO -->
+    <div class="card animate-up-3" style="margin-bottom:20px">
+      <h4 style="margin-bottom:16px">📸 Step 2 — Upload Profile Photo</h4>
+      <div class="upload-zone" id="photoZone" style="padding:28px">
+        <div style="font-size:36px;margin-bottom:8px">🖼️</div>
+        <div style="font-weight:600;margin-bottom:4px">Upload your candidate photo</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Square photo, at least 400×400px · JPG or PNG</div>
+        <button type="button" class="btn btn-ghost btn-sm">Choose Photo</button>
+      </div>
+      <div id="photoPreview" style="display:none;margin-top:12px;text-align:center">
+        <div style="width:100px;height:100px;border-radius:50%;background:var(--navy-light);border:3px solid var(--border-gold);margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--gold)">A</div>
+        <div style="font-size:12px;color:var(--status-live);margin-top:8px">✅ Photo uploaded</div>
+      </div>
+    </div>
+
+    <!-- STEP 3: MANIFESTO -->
+    <div class="card animate-up-4" style="margin-bottom:20px">
+      <h4 style="margin-bottom:6px">📝 Step 3 — Write Your Manifesto</h4>
+      <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">Tell students why they should vote for you. Be clear, honest, and specific about your goals.</p>
+      <div class="form-group" style="margin-bottom:14px">
+        <label class="form-label">Campaign Tagline *</label>
+        <input type="text" class="form-input" id="tagline" placeholder="e.g. 'A Voice for Every Student'" maxlength="80">
+        <span class="form-hint">Short, memorable one-liner · max 80 characters</span>
+      </div>
+      <div class="form-group" style="margin-bottom:14px">
+        <label class="form-label">Full Manifesto *</label>
+        <textarea class="form-textarea" id="manifesto" rows="7" placeholder="Describe your vision, plans, and why you're the right candidate for this role..."  style="min-height:140px"></textarea>
+        <div style="display:flex;justify-content:space-between;margin-top:4px">
+          <span class="form-hint">Minimum 100 characters</span>
+          <span class="form-hint" id="manifestoCount">0 / 1000</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Key Campaign Points</label>
+        <div id="campaignPoints" style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:8px"><input type="text" class="form-input" placeholder="Campaign point 1"><button type="button" class="btn btn-ghost btn-icon" onclick="this.closest('div').remove()">✕</button></div>
+          <div style="display:flex;gap:8px"><input type="text" class="form-input" placeholder="Campaign point 2"><button type="button" class="btn btn-ghost btn-icon" onclick="this.closest('div').remove()">✕</button></div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addPoint()">+ Add Point</button>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="card animate-up" style="text-align:center;padding:28px">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">
+        By submitting, you confirm all information is accurate. Your application will be reviewed by the Admin before going public.
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost btn-lg" onclick="saveDraft()">💾 Save Draft</button>
+        <button type="submit" class="btn btn-primary btn-lg">🚀 Submit Application</button>
+      </div>
+    </div>
+  </form>
+</main>
+
+<div class="toast-container"></div>
+<script src="../assets/js/electra.js"></script>
+<script>
+let selectedSeat = null;
+
+function selectSeat(el, seatName) {
+  document.querySelectorAll('.seat-option').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSeat = seatName;
+}
+
+document.getElementById('manifesto').addEventListener('input', function() {
+  document.getElementById('manifestoCount').textContent = `${this.value.length} / 1000`;
+});
+
+function addPoint() {
+  const wrap = document.getElementById('campaignPoints');
+  const idx = wrap.children.length + 1;
+  const div = document.createElement('div');
+  div.style = 'display:flex;gap:8px';
+  div.innerHTML = `<input type="text" class="form-input" placeholder="Campaign point ${idx}"><button type="button" class="btn btn-ghost btn-icon" onclick="this.closest('div').remove()">✕</button>`;
+  wrap.appendChild(div);
+}
+
+function saveDraft() { Toast.info('Draft saved!'); }
+
+UploadZone.init('photoZone', (file) => {
+  document.getElementById('photoPreview').style.display = 'block';
+  Toast.success('Photo uploaded!');
+});
+
+document.getElementById('applyForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (!selectedSeat)  { Toast.warning('Please select a seat to contest'); return; }
+  if (!document.getElementById('manifesto').value.trim()) { Toast.warning('Please write your manifesto'); return; }
+  Toast.success('Application submitted! Admin will review it shortly.');
+  setTimeout(() => location.href='dashboard.html', 1500);
+});
+</script>
+</body>
+</html>

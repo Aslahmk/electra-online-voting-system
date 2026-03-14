@@ -1,0 +1,95 @@
+<!-- ============================================================
+     ELECTRA — Admin Sidebar (include in all admin pages)
+     ============================================================ -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- LOGO -->
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-mark">E</div>
+    <div class="sidebar-logo-text">
+      <div class="sidebar-logo-title">ELECTRA</div>
+      <div class="sidebar-logo-sub">ADMIN PANEL</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="sidebar-nav">
+
+    <div class="nav-section-label">Main</div>
+
+    <a href="dashboard.html" class="nav-item active">
+      <span class="nav-icon">📊</span>
+      <span>Dashboard</span>
+    </a>
+
+    <div class="nav-section-label">Students</div>
+
+    <a href="students.html" class="nav-item">
+      <span class="nav-icon">👥</span>
+      <span>Student Management</span>
+    </a>
+
+    <div class="nav-section-label">Election</div>
+
+    <a href="election-setup.html" class="nav-item">
+      <span class="nav-icon">⚙️</span>
+      <span>Election Setup</span>
+    </a>
+    <a href="seat-management.html" class="nav-item">
+      <span class="nav-icon">🏛️</span>
+      <span>Seat Management</span>
+    </a>
+    <a href="candidate-approval.html" class="nav-item">
+      <span class="nav-icon">✅</span>
+      <span>Candidate Approval</span>
+      <span class="nav-badge" id="pendingBadge">3</span>
+    </a>
+
+    <div class="nav-section-label">Results</div>
+
+    <a href="results.html" class="nav-item">
+      <span class="nav-icon">🏆</span>
+      <span>Results &amp; Publishing</span>
+    </a>
+
+    <div class="nav-section-label">Settings</div>
+
+    <a href="settings.html" class="nav-item">
+      <span class="nav-icon">🔧</span>
+      <span>Settings</span>
+    </a>
+    <a href="#" class="nav-item logout-btn">
+      <span class="nav-icon">🚪</span>
+      <span>Logout</span>
+    </a>
+
+  </nav>
+
+  <!-- FOOTER -->
+  <div class="sidebar-footer">
+    <!-- Election Status -->
+    <div style="background:var(--surface-2);border:1px solid var(--border-subtle);border-radius:var(--r-md);padding:12px 14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:12px;font-weight:600;color:var(--text-muted)">ELECTION STATUS</span>
+        <span class="badge badge-live" style="font-size:10px">
+          <span class="status-dot live"></span> LIVE
+        </span>
+      </div>
+      <div style="font-size:13px;font-weight:600;color:var(--text-primary)">Union Election 2024</div>
+      <div class="progress-bar" style="margin-top:8px">
+        <div class="progress-fill" style="width:62%"></div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">62% voted · 3h 24m left</div>
+    </div>
+
+    <!-- User -->
+    <div class="sidebar-user" onclick="location.href='settings.html'">
+      <div class="avatar avatar-placeholder" style="width:36px;height:36px;font-size:14px;font-weight:700;border-radius:50%;background:var(--navy-light);border:2px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0">A</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name">Admin User</div>
+        <div class="sidebar-user-role">College Administrator</div>
+      </div>
+    </div>
+  </div>
+
+</aside>

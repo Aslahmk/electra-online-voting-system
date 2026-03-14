@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — ELECTRA</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<style>
+/* DASHBOARD-SPECIFIC OVERRIDES */
+.election-hero {
+  background: var(--surface-card);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--r-xl);
+  padding: 28px 32px;
+  display: flex; align-items: center; gap: 32px;
+  margin-bottom: 28px;
+  position: relative; overflow: hidden;
+}
+.election-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(233,168,50,.05), transparent);
+  pointer-events: none;
+}
+.election-hero-info { flex: 1; }
+.election-hero-timer { display: flex; gap: 12px; }
+.election-hero-actions { display: flex; gap: 10px; flex-shrink: 0; flex-direction: column; }
+
+.quick-action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.quick-action {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer;
+  transition: all .25s var(--ease-out);
+  text-decoration: none;
+}
+.quick-action:hover { border-color: var(--border-gold); transform: translateY(-2px); background: var(--surface-3); }
+.qa-icon { font-size: 24px; }
+.qa-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.qa-sub   { font-size: 12px; color: var(--text-muted); }
+
+.dept-progress-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+/* LIVE FEED */
+.live-feed { display: flex; flex-direction: column; gap: 0; }
+.feed-item {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: 13px;
+}
+.feed-item:last-child { border-bottom: none; }
+.feed-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink:0; margin-top: 4px; }
+.feed-dot.vote { background: var(--teal); }
+.feed-dot.reg  { background: var(--gold); }
+.feed-dot.sys  { background: var(--sky); }
+.feed-time { color: var(--text-muted); font-size: 11px; font-family: var(--font-mono); flex-shrink:0; }
+
+@media (max-width:1024px) {
+  .quick-action-grid { grid-template-columns: repeat(2,1fr); }
+  .election-hero { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .election-hero-timer { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- SIDEBAR (inline for simplicity) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-mark">E</div>
+    <div class="sidebar-logo-text">
+      <div class="sidebar-logo-title">ELECTRA</div>
+      <div class="sidebar-logo-sub">ADMIN PANEL</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="dashboard.html" class="nav-item active"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    <div class="nav-section-label">Students</div>
+    <a href="students.html" class="nav-item"><span class="nav-icon">👥</span><span>Student Management</span></a>
+    <div class="nav-section-label">Election</div>
+    <a href="election-setup.html" class="nav-item"><span class="nav-icon">⚙️</span><span>Election Setup</span></a>
+    <a href="seat-management.html" class="nav-item"><span class="nav-icon">🏛️</span><span>Seat Management</span></a>
+    <a href="candidate-approval.html" class="nav-item"><span class="nav-icon">✅</span><span>Candidate Approval</span><span class="nav-badge">3</span></a>
+    <div class="nav-section-label">Results</div>
+    <a href="results.html" class="nav-item"><span class="nav-icon">🏆</span><span>Results &amp; Publishing</span></a>
+    <div class="nav-section-label">Settings</div>
+    <a href="#" class="nav-item"><span class="nav-icon">🔧</span><span>Settings</span></a>
+    <a href="#" class="nav-item logout-btn"><span class="nav-icon">🚪</span><span>Logout</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div style="background:var(--surface-2);border:1px solid var(--border-subtle);border-radius:var(--r-md);padding:12px 14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:12px;font-weight:600;color:var(--text-muted)">ELECTION</span>
+        <span class="badge badge-live" style="font-size:10px"><span class="status-dot live"></span> LIVE</span>
+      </div>
+      <div style="font-size:13px;font-weight:600">Union Election 2024</div>
+      <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:62%"></div></div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">62% voted · 3h 24m left</div>
+    </div>
+    <div class="sidebar-user">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--navy-light);border:2px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;flex-shrink:0">A</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name">Admin User</div><div class="sidebar-user-role">College Administrator</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- TOPBAR -->
+<header class="topbar" id="topbar">
+  <button onclick="Sidebar.toggle()" class="topbar-btn" style="margin-right:8px">☰</button>
+  <div class="topbar-search">
+    <div class="input-group">
+      <span class="input-icon" style="font-size:14px">🔍</span>
+      <input type="search" class="form-input" placeholder="Search students, candidates…" style="padding-left:38px">
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <div class="topbar-btn" onclick="Modal.open('addStudentModal')">
+      <span>👤+</span>
+    </div>
+    <div class="topbar-btn">
+      <span>🔔</span>
+      <div class="topbar-notif-dot"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--surface-2);border:1px solid var(--border-subtle);border-radius:var(--r-full);cursor:pointer">
+      <div style="width:28px;height:28px;border-radius:50%;background:var(--navy-light);border:1.5px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;font-size:12px">A</div>
+      <span style="font-size:13px;font-weight:600">St. Xavier's</span>
+      <span style="color:var(--text-muted);font-size:12px">▾</span>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main-content">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header flex-between animate-up">
+    <div>
+      <div class="section-eyebrow" style="margin-bottom:4px">St. Xavier's College · SXC001</div>
+      <h1 class="page-title">Admin Dashboard</h1>
+      <p class="page-sub">Welcome back, Admin. Here's your election overview.</p>
+    </div>
+    <div class="flex gap-sm">
+      <button class="btn btn-ghost" onclick="location.href='election-setup.html'">⚙️ Election Settings</button>
+      <button class="btn btn-primary" onclick="Modal.open('publishModal')">🏆 Publish Results</button>
+    </div>
+  </div>
+
+  <!-- ELECTION HERO CARD -->
+  <div class="election-hero animate-up-1">
+    <div class="election-hero-info">
+      <div class="flex gap-sm" style="align-items:center;margin-bottom:8px">
+        <span class="badge badge-live"><span class="status-dot live"></span> LIVE NOW</span>
+        <span class="badge badge-gold">Union Election 2024</span>
+      </div>
+      <h3 style="font-size:1.3rem;margin-bottom:4px">College Union Election — Academic Year 2024–25</h3>
+      <p style="color:var(--text-muted);font-size:13px">Started at 9:00 AM · Closes at 4:00 PM · <strong style="color:var(--text-primary)">1,247 of 2,012 students voted</strong></p>
+      <div class="progress-bar" style="margin-top:14px;height:8px">
+        <div class="progress-fill" style="width:62%"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px">62% voter turnout</div>
+    </div>
+    <div class="election-hero-timer">
+      <div class="timer-block">
+        <div class="timer-value" id="timerH">03</div>
+        <div class="timer-label">Hours</div>
+      </div>
+      <div class="timer-block" style="padding-top:8px;font-size:1.8rem;color:var(--gold)">:</div>
+      <div class="timer-block">
+        <div class="timer-value" id="timerM">24</div>
+        <div class="timer-label">Mins</div>
+      </div>
+      <div class="timer-block" style="padding-top:8px;font-size:1.8rem;color:var(--gold)">:</div>
+      <div class="timer-block">
+        <div class="timer-value" id="timerS">00</div>
+        <div class="timer-label">Secs</div>
+      </div>
+    </div>
+    <div class="election-hero-actions">
+      <button class="btn btn-danger btn-sm">⏹ Stop Election</button>
+      <button class="btn btn-ghost btn-sm" onclick="location.href='results.html'">📊 Live Results</button>
+    </div>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="grid-4 animate-up-2" style="margin-bottom:28px">
+    <div class="card-stat">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Total Students</div>
+      <div style="font-size:2rem;font-weight:700;font-family:var(--font-display)"><span data-count="2012">0</span></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Registered voters</div>
+    </div>
+    <div class="card-stat teal">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Votes Cast</div>
+      <div style="font-size:2rem;font-weight:700;font-family:var(--font-display);color:var(--teal)"><span data-count="1247">0</span></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px">↑ +84 in last hour</div>
+    </div>
+    <div class="card-stat rose">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Pending Approvals</div>
+      <div style="font-size:2rem;font-weight:700;font-family:var(--font-display);color:var(--rose)"><span data-count="3">0</span></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px"><a href="candidate-approval.html" style="color:var(--rose)">Review now →</a></div>
+    </div>
+    <div class="card-stat sky">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Candidates</div>
+      <div style="font-size:2rem;font-weight:700;font-family:var(--font-display);color:var(--sky)"><span data-count="38">0</span></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Across 14 seats</div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="quick-action-grid animate-up-3">
+    <a href="students.html" class="quick-action">
+      <div class="qa-icon">👥</div>
+      <div class="qa-title">Add Students</div>
+      <div class="qa-sub">Manual or CSV upload</div>
+    </a>
+    <a href="candidate-approval.html" class="quick-action">
+      <div class="qa-icon">✅</div>
+      <div class="qa-title">Approve Candidates</div>
+      <div class="qa-sub">3 applications pending</div>
+    </a>
+    <a href="election-setup.html" class="quick-action">
+      <div class="qa-icon">⏰</div>
+      <div class="qa-title">Edit Schedule</div>
+      <div class="qa-sub">Change election timing</div>
+    </a>
+    <a href="results.html" class="quick-action">
+      <div class="qa-icon">📊</div>
+      <div class="qa-title">View Live Results</div>
+      <div class="qa-sub">Real-time vote counts</div>
+    </a>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="grid-2 animate-up-4">
+
+    <!-- DEPARTMENT TURNOUT -->
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:20px">
+        <h4>Department Turnout</h4>
+        <span class="badge badge-gold">Today</span>
+      </div>
+      <div class="dept-progress-wrap">
+        <div>
+          <div class="vote-bar-header"><span class="vote-bar-name">Computer Science</span><span class="vote-bar-count" style="color:var(--teal)">89%</span></div>
+          <div class="vote-bar"><div class="vote-bar-fill teal" style="width:89%"></div></div>
+        </div>
+        <div>
+          <div class="vote-bar-header"><span class="vote-bar-name">Mathematics</span><span class="vote-bar-count">74%</span></div>
+          <div class="vote-bar"><div class="vote-bar-fill" style="width:74%"></div></div>
+        </div>
+        <div>
+          <div class="vote-bar-header"><span class="vote-bar-name">Physics</span><span class="vote-bar-count">68%</span></div>
+          <div class="vote-bar"><div class="vote-bar-fill" style="width:68%"></div></div>
+        </div>
+        <div>
+          <div class="vote-bar-header"><span class="vote-bar-name">Chemistry</span><span class="vote-bar-count">61%</span></div>
+          <div class="vote-bar"><div class="vote-bar-fill" style="width:61%"></div></div>
+        </div>
+        <div>
+          <div class="vote-bar-header"><span class="vote-bar-name">English</span><span class="vote-bar-count">55%</span></div>
+          <div class="vote-bar"><div class="vote-bar-fill" style="width:55%"></div></div>
+        </div>
+        <div>
+          <div class="vote-bar-header"><span class="vote-bar-name">Commerce</span><span class="vote-bar-count">49%</span></div>
+          <div class="vote-bar"><div class="vote-bar-fill rose" style="width:49%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY FEED -->
+    <div class="card">
+      <div class="flex-between" style="margin-bottom:20px">
+        <h4>Live Activity Feed</h4>
+        <span class="badge badge-live"><span class="status-dot live"></span> Real-time</span>
+      </div>
+      <div class="live-feed">
+        <div class="feed-item">
+          <div class="feed-dot vote"></div>
+          <div style="flex:1"><span style="color:var(--text-primary);font-weight:600">Arjun S. (CS, UG)</span> cast their vote</div>
+          <div class="feed-time">2m ago</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot vote"></div>
+          <div style="flex:1"><span style="color:var(--text-primary);font-weight:600">Priya N. (Math, PG)</span> cast their vote</div>
+          <div class="feed-time">4m ago</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot reg"></div>
+          <div style="flex:1"><span style="color:var(--gold);font-weight:600">Candidate application</span> submitted · Arts Club Secretary</div>
+          <div class="feed-time">8m ago</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot vote"></div>
+          <div style="flex:1"><span style="color:var(--text-primary);font-weight:600">Kavya R. (Physics, UG)</span> cast their vote</div>
+          <div class="feed-time">11m ago</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot sys"></div>
+          <div style="flex:1"><span style="color:var(--sky);font-weight:600">Candidate Rohan K.</span> approved for Chairman seat</div>
+          <div class="feed-time">18m ago</div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot vote"></div>
+          <div style="flex:1"><span style="color:var(--text-primary);font-weight:600">Meera T. (Commerce, UG)</span> cast their vote</div>
+          <div class="feed-time">21m ago</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- PUBLISH MODAL -->
+<div class="modal-overlay" id="publishModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">🏆 Publish Results</h3>
+      <button class="modal-close" onclick="Modal.close('publishModal')">✕</button>
+    </div>
+    <p style="color:var(--text-muted);font-size:14px;margin-bottom:20px">
+      Publishing results will make them visible to all students. This action cannot be undone once confirmed.
+    </p>
+    <div style="background:var(--surface-2);border-radius:var(--r-md);padding:16px;margin-bottom:24px">
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Results Summary</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between;font-size:14px"><span>Total Seats</span><strong>14</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px"><span>Total Votes Cast</span><strong style="color:var(--teal)">1,247</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px"><span>Voter Turnout</span><strong style="color:var(--gold)">62%</strong></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="Modal.close('publishModal')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="publishResults()">Publish Now</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="../assets/js/electra.js"></script>
+<script>
+// Live timer
+const endTime = new Date(Date.now() + (3*3600 + 24*60) * 1000);
+ElectionTimer.start(endTime, (t) => {
+  document.getElementById('timerH').textContent = t.hours;
+  document.getElementById('timerM').textContent = t.minutes;
+  document.getElementById('timerS').textContent = t.seconds;
+}, () => {
+  Toast.info('Election has ended! Review and publish results.');
+});
+
+function publishResults() {
+  Modal.close('publishModal');
+  Toast.success('Results published successfully! Students can now view results.');
+  setTimeout(() => { location.href = 'results.html'; }, 1500);
+}
+</script>
+</body>
+</html>

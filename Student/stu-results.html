@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Election Results — ELECTRA</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<style>
+.stu-topbar{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(8,13,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);display:flex;align-items:center;padding:0 32px;z-index:200;gap:16px;}
+.stu-nav{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:var(--r-full);}
+.stu-nav-btn{padding:7px 16px;border-radius:var(--r-full);font-size:13px;font-weight:500;color:var(--text-muted);background:transparent;border:none;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;}
+.stu-nav-btn.active,.stu-nav-btn:hover{background:var(--surface-card);color:var(--gold);}
+.stu-main{padding-top:84px;padding-bottom:60px;max-width:1000px;margin:0 auto;padding-left:24px;padding-right:24px;}
+
+.winner-card {
+  background:var(--surface-card);
+  border:2px solid var(--border-gold);
+  border-radius:var(--r-xl);
+  padding:24px;
+  text-align:center;
+  position:relative;overflow:hidden;
+  transition:all .3s var(--ease-out);
+}
+.winner-card::before {
+  content:'';position:absolute;top:-2px;left:10%;right:10%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.winner-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-gold); }
+.winner-crown { font-size:24px;position:absolute;top:-12px;left:50%;transform:translateX(-50%); }
+.result-seat-block { background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px; }
+.result-seat-head { background:var(--surface-2);padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border-subtle); }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<div class="stu-topbar">
+  <div style="font-family:var(--font-display);font-weight:700;font-size:1.1rem"><span style="color:var(--gold)">E</span>LECTRA</div>
+  <div class="stu-nav">
+    <a href="dashboard.html" class="stu-nav-btn">🏠 Dashboard</a>
+    <a href="voting.html" class="stu-nav-btn">🗳️ Vote Now</a>
+    <a href="apply-candidate.html" class="stu-nav-btn">🎯 Apply</a>
+    <a href="stu-results.html" class="stu-nav-btn active">🏆 Results</a>
+  </div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+    <span class="badge badge-live"><span class="status-dot live"></span> Results Published</span>
+    <a href="#" class="stu-nav-btn logout-btn" style="padding:4px 8px;margin-left:8px;color:var(--rose);">Logout</a>
+  </div>
+</div>
+
+<main class="stu-main">
+  <div class="page-header animate-up" style="text-align:center">
+    <div class="section-eyebrow" style="justify-content:center;display:flex">Union Election 2024–25 · St. Xavier's College</div>
+    <h1 class="page-title" style="font-size:2.5rem">🏆 Election Results</h1>
+    <p class="page-sub">Official results published by Admin · 1,247 total votes · 62% voter turnout</p>
+  </div>
+
+  <!-- TURNOUT OVERVIEW -->
+  <div class="grid-3 animate-up-1" style="margin-bottom:32px">
+    <div class="card-stat" style="text-align:center">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Total Students</div>
+      <div style="font-size:2rem;font-weight:700"><span data-count="2012">0</span></div>
+    </div>
+    <div class="card-stat teal" style="text-align:center">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Votes Cast</div>
+      <div style="font-size:2rem;font-weight:700;color:var(--teal)"><span data-count="1247">0</span></div>
+    </div>
+    <div class="card-stat" style="text-align:center">
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Voter Turnout</div>
+      <div style="font-size:2rem;font-weight:700;color:var(--gold)">62%</div>
+    </div>
+  </div>
+
+  <!-- WINNERS SHOWCASE -->
+  <div class="animate-up-2" style="margin-bottom:36px">
+    <h3 style="margin-bottom:20px;text-align:center">🎖️ Elected Representatives</h3>
+    <div class="grid-3" style="gap:16px">
+      <div class="winner-card">
+        <div class="winner-crown">👑</div>
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--navy-light);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:var(--gold);margin:16px auto 12px">R</div>
+        <div style="font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Chairman</div>
+        <div style="font-weight:700;font-size:1.1rem">Rohan Kumar</div>
+        <div style="font-size:12px;color:var(--text-muted)">Computer Science · UG</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--teal);margin-top:8px">584 votes · 46.8%</div>
+      </div>
+      <div class="winner-card">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--navy-light);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:var(--gold);margin:12px auto">P</div>
+        <div style="font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Vice Chairman</div>
+        <div style="font-weight:700;font-size:1.1rem">Priya Nair</div>
+        <div style="font-size:12px;color:var(--text-muted)">Computer Science · UG</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--teal);margin-top:8px">698 votes · 56%</div>
+      </div>
+      <div class="winner-card">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--navy-light);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:var(--gold);margin:12px auto">A</div>
+        <div style="font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">General Secretary</div>
+        <div style="font-weight:700;font-size:1.1rem">Arjun Suresh</div>
+        <div style="font-size:12px;color:var(--text-muted)">Computer Science · UG</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--teal);margin-top:8px">521 votes · 41.8%</div>
+      </div>
+      <div class="winner-card">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--navy-light);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:var(--gold);margin:12px auto">K</div>
+        <div style="font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Arts Club Secretary</div>
+        <div style="font-weight:700;font-size:1.1rem">Kavya Rajan</div>
+        <div style="font-size:12px;color:var(--text-muted)">Physics · UG</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--teal);margin-top:8px">612 votes · 49.1%</div>
+      </div>
+      <div class="winner-card">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--navy-light);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:var(--gold);margin:12px auto">D</div>
+        <div style="font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Magazine Editor</div>
+        <div style="font-weight:700;font-size:1.1rem">Divya Krishnan</div>
+        <div style="font-size:12px;color:var(--text-muted)">Mathematics · PG</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--teal);margin-top:8px">668 votes · 53.6%</div>
+      </div>
+      <div class="winner-card" style="border-color:rgba(242,95,122,.5)">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--navy-light);border:3px solid var(--rose);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:28px;color:var(--rose);margin:12px auto">K</div>
+        <div style="font-size:11px;color:var(--rose);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Lady Representative</div>
+        <div style="font-weight:700;font-size:1.1rem">Kavya Rajan</div>
+        <div style="font-size:12px;color:var(--text-muted)">Physics · UG</div>
+        <div style="font-family:var(--font-mono);font-size:13px;color:var(--teal);margin-top:8px">489 votes · 43.2%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAILED RESULTS TABS -->
+  <div class="tabs animate-up-3" style="margin-bottom:24px;width:fit-content">
+    <button class="tab-btn active" onclick="switchTab('general',this)">🏛️ General Seats</button>
+    <button class="tab-btn" onclick="switchTab('dept',this)">🏫 Department Reps</button>
+    <button class="tab-btn" onclick="switchTab('uuc',this)">🏫 UUC Reps</button>
+    <button class="tab-btn" onclick="switchTab('lady',this)">👩 Lady Rep</button>
+  </div>
+
+  <!-- GENERAL -->
+  <div id="tabGeneral">
+    <div class="grid-2 animate-up-4">
+      <div class="result-seat-block">
+        <div class="result-seat-head"><span>👑</span><div><div style="font-weight:700">Chairman</div><div style="font-size:12px;color:var(--text-muted)">1,247 votes cast</div></div></div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:12px" id="chairmanResult"></div>
+      </div>
+      <div class="result-seat-block">
+        <div class="result-seat-head"><span>🤝</span><div><div style="font-weight:700">Vice Chairman</div><div style="font-size:12px;color:var(--text-muted)">1,247 votes cast</div></div></div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:12px" id="vcResult"></div>
+      </div>
+      <div class="result-seat-block">
+        <div class="result-seat-head"><span>📋</span><div><div style="font-weight:700">General Secretary</div><div style="font-size:12px;color:var(--text-muted)">1,247 votes cast</div></div></div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:12px" id="genSecResult"></div>
+      </div>
+      <div class="result-seat-block">
+        <div class="result-seat-head"><span>🎭</span><div><div style="font-weight:700">Arts Club Secretary</div><div style="font-size:12px;color:var(--text-muted)">1,247 votes cast</div></div></div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:12px" id="artsResult"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPT -->
+  <div id="tabDept" style="display:none">
+    <div class="grid-2 animate-up" id="deptResultGrid"></div>
+  </div>
+
+  <!-- UUC -->
+  <div id="tabUuc" style="display:none">
+    <div style="max-width:600px" class="animate-up">
+      <div class="result-seat-block">
+        <div class="result-seat-head"><span>🏫</span><div><div style="font-weight:700">UUC Representatives — Top 2 Elected</div><div style="font-size:12px;color:var(--text-muted)">Multi-candidate vote</div></div></div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:12px" id="uucResult"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LADY -->
+  <div id="tabLady" style="display:none">
+    <div style="max-width:600px" class="animate-up">
+      <div class="result-seat-block">
+        <div class="result-seat-head"><span>👩</span><div><div style="font-weight:700">Lady Representative — Top 2 Elected</div><div style="font-size:12px;color:var(--text-muted)">Female voters only</div></div></div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:12px" id="ladyResult"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast-container"></div>
+<script src="../assets/js/electra.js"></script>
+<script>
+const resultData = {
+  chairman: [{name:'Rohan Kumar',votes:584},{name:'Arun Pillai',votes:423},{name:'Vishnu Raj',votes:240}],
+  vc:       [{name:'Priya Nair',votes:698},{name:'Meera Thomas',votes:549}],
+  genSec:   [{name:'Arjun Suresh',votes:521},{name:'Kavya Rajan',votes:410},{name:'Rahul Mohan',votes:196},{name:'Divya Krishnan',votes:120}],
+  arts:     [{name:'Kavya Rajan',votes:612},{name:'Sneha Menon',votes:398},{name:'Meera Thomas',votes:237}],
+  uuc:      [{name:'Sneha Menon',votes:712},{name:'Rohan Kumar',votes:683},{name:'Arjun Suresh',votes:598},{name:'Priya Nair',votes:455}],
+  lady:     [{name:'Kavya Rajan',votes:489},{name:'Sneha Menon',votes:421},{name:'Divya Krishnan',votes:287}],
+};
+
+setTimeout(() => {
+  ResultsRenderer.renderBars(resultData.chairman,'chairmanResult');
+  ResultsRenderer.renderBars(resultData.vc,'vcResult');
+  ResultsRenderer.renderBars(resultData.genSec,'genSecResult');
+  ResultsRenderer.renderBars(resultData.arts,'artsResult');
+  ResultsRenderer.renderBars(resultData.uuc,'uucResult');
+  ResultsRenderer.renderBars(resultData.lady,'ladyResult');
+
+  const depts = ['Computer Science','Mathematics','Physics','Chemistry','English','Commerce'];
+  document.getElementById('deptResultGrid').innerHTML = depts.map(d => `
+    <div class="result-seat-block">
+      <div class="result-seat-head"><span>🏫</span><div><div style="font-weight:700">${d}</div></div></div>
+      <div style="padding:16px 20px">
+        <div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;margin-bottom:10px">UG Representative — <span style="color:var(--status-live)">Winner: Candidate A</span></div>
+        <div class="vote-bar-wrap" style="margin-bottom:8px"><div class="vote-bar-header"><span class="vote-bar-name">Candidate A</span><span class="vote-bar-count">234</span></div><div class="vote-bar"><div class="vote-bar-fill teal" style="width:75%"></div></div></div>
+        <div class="vote-bar-wrap"><div class="vote-bar-header"><span class="vote-bar-name">Candidate B</span><span class="vote-bar-count">78</span></div><div class="vote-bar"><div class="vote-bar-fill" style="width:25%"></div></div></div>
+        <div class="divider" style="margin:12px 0"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--sky);text-transform:uppercase;margin-bottom:10px">PG Representative — <span style="color:var(--status-live)">Winner: Candidate C</span></div>
+        <div class="vote-bar-wrap"><div class="vote-bar-header"><span class="vote-bar-name">Candidate C (Unopposed)</span><span class="vote-bar-count">89</span></div><div class="vote-bar"><div class="vote-bar-fill" style="width:100%;background:linear-gradient(90deg,#2266aa,var(--sky))"></div></div></div>
+      </div>
+    </div>`).join('');
+}, 400);
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  ['General','Dept','Uuc','Lady'].forEach(t => {
+    document.getElementById('tab'+t).style.display = (t.toLowerCase() === tab) ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>

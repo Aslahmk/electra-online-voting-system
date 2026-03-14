@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Results — ELECTRA Admin</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<style>
+.result-seat-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: all .3s var(--ease-out);
+}
+.result-seat-card:hover { border-color: var(--border-gold); }
+.result-seat-header {
+  background: var(--surface-2);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.winner-crown {
+  position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+  font-size: 20px;
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><div class="sidebar-logo-mark">E</div><div class="sidebar-logo-text"><div class="sidebar-logo-title">ELECTRA</div><div class="sidebar-logo-sub">ADMIN PANEL</div></div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    <div class="nav-section-label">Students</div>
+    <a href="students.html" class="nav-item"><span class="nav-icon">👥</span><span>Student Management</span></a>
+    <div class="nav-section-label">Election</div>
+    <a href="election-setup.html" class="nav-item"><span class="nav-icon">⚙️</span><span>Election Setup</span></a>
+    <a href="candidate-approval.html" class="nav-item"><span class="nav-icon">✅</span><span>Candidate Approval</span><span class="nav-badge">3</span></a>
+    <div class="nav-section-label">Results</div>
+    <a href="results.html" class="nav-item active"><span class="nav-icon">🏆</span><span>Results &amp; Publishing</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--navy-light);border:2px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;flex-shrink:0">A</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name">Admin User</div><div class="sidebar-user-role">College Administrator</div></div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar" id="topbar">
+  <button onclick="Sidebar.toggle()" class="topbar-btn" style="margin-right:8px">☰</button>
+  <h2 style="font-family:var(--font-display);font-size:1.1rem">Election Results</h2>
+  <div class="topbar-actions">
+    <span class="badge badge-gold">Not Yet Published</span>
+    <button class="btn btn-primary btn-sm" onclick="Modal.open('publishModal')">🏆 Publish Results</button>
+  </div>
+</header>
+
+<main class="main-content">
+
+  <div class="page-header flex-between animate-up">
+    <div>
+      <div class="section-eyebrow">College Union Election 2024–25</div>
+      <h1 class="page-title">Election Results</h1>
+      <p class="page-sub">Review all vote counts before publishing to students.</p>
+    </div>
+    <div class="flex gap-sm">
+      <button class="btn btn-ghost">📥 Export Report</button>
+      <button class="btn btn-primary" onclick="Modal.open('publishModal')">🏆 Publish Results</button>
+    </div>
+  </div>
+
+  <!-- OVERVIEW STATS -->
+  <div class="grid-4 animate-up-1" style="margin-bottom:24px">
+    <div class="card-stat"><div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Total Votes</div><div style="font-size:1.8rem;font-weight:700"><span data-count="1247">0</span></div></div>
+    <div class="card-stat teal"><div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Turnout</div><div style="font-size:1.8rem;font-weight:700;color:var(--teal)">62%</div></div>
+    <div class="card-stat sky"><div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Seats Decided</div><div style="font-size:1.8rem;font-weight:700;color:var(--sky)">14</div></div>
+    <div class="card-stat rose"><div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Status</div><div style="font-size:1.1rem;font-weight:700;color:var(--rose)">Unpublished</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs animate-up-2" style="margin-bottom:24px;width:fit-content">
+    <button class="tab-btn active" onclick="switchResultTab('general', this)">🏛️ General Seats</button>
+    <button class="tab-btn" onclick="switchResultTab('dept', this)">🏫 Department Reps</button>
+    <button class="tab-btn" onclick="switchResultTab('lady', this)">👩 Lady Rep</button>
+  </div>
+
+  <!-- GENERAL RESULTS -->
+  <div id="resultGeneral" class="grid-2 animate-up-3">
+
+    <div class="result-seat-card">
+      <div class="result-seat-header">
+        <span style="font-size:20px">👑</span>
+        <div>
+          <div style="font-weight:700">Chairman</div>
+          <div style="font-size:12px;color:var(--text-muted)">1 Seat · 1,247 votes cast</div>
+        </div>
+        <span class="badge badge-teal" style="margin-left:auto">Winner Decided</span>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px" id="chairmanBars"></div>
+    </div>
+
+    <div class="result-seat-card">
+      <div class="result-seat-header">
+        <span style="font-size:20px">🤝</span>
+        <div>
+          <div style="font-weight:700">Vice Chairman</div>
+          <div style="font-size:12px;color:var(--text-muted)">1 Seat · 1,247 votes cast</div>
+        </div>
+        <span class="badge badge-teal" style="margin-left:auto">Winner Decided</span>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px" id="vcBars"></div>
+    </div>
+
+    <div class="result-seat-card">
+      <div class="result-seat-header">
+        <span style="font-size:20px">📋</span>
+        <div>
+          <div style="font-weight:700">General Secretary</div>
+          <div style="font-size:12px;color:var(--text-muted)">1 Seat · 1,247 votes cast</div>
+        </div>
+        <span class="badge badge-teal" style="margin-left:auto">Winner Decided</span>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px" id="genSecBars"></div>
+    </div>
+
+    <div class="result-seat-card">
+      <div class="result-seat-header">
+        <span style="font-size:20px">🏫</span>
+        <div>
+          <div style="font-weight:700">UUC Representatives (Top 2)</div>
+          <div style="font-size:12px;color:var(--text-muted)">2 Seats · Multi-select vote</div>
+        </div>
+        <span class="badge badge-teal" style="margin-left:auto">2 Winners</span>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:14px" id="uucBars"></div>
+    </div>
+
+  </div>
+
+  <!-- DEPT RESULTS -->
+  <div id="resultDept" style="display:none">
+    <div class="grid-2 animate-up-3" id="deptResultsGrid"></div>
+  </div>
+
+  <!-- LADY REP RESULTS -->
+  <div id="resultLady" style="display:none">
+    <div style="max-width:600px" class="animate-up-3">
+      <div class="result-seat-card">
+        <div class="result-seat-header">
+          <span style="font-size:20px">👩‍🎓</span>
+          <div>
+            <div style="font-weight:700">Lady Representative (Top 2)</div>
+            <div style="font-size:12px;color:var(--text-muted)">2 Seats · Female voters only</div>
+          </div>
+          <span class="badge badge-rose" style="margin-left:auto">2 Winners</span>
+        </div>
+        <div style="padding:20px;display:flex;flex-direction:column;gap:14px" id="ladyBars"></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- PUBLISH MODAL -->
+<div class="modal-overlay" id="publishModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">🏆 Publish Results</h3>
+      <button class="modal-close" onclick="Modal.close('publishModal')">✕</button>
+    </div>
+    <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:var(--r-md);padding:14px;margin-bottom:20px">
+      <div style="color:var(--status-live);font-weight:600;font-size:14px;margin-bottom:4px">⚠️ This action is irreversible</div>
+      <div style="font-size:13px;color:var(--text-muted)">Once published, all students can view the full results including winner names and vote counts.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+      <div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:var(--text-muted)">Total votes counted</span><strong>1,247</strong></div>
+      <div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:var(--text-muted)">Seats with clear winners</span><strong style="color:var(--status-live)">14 / 14</strong></div>
+      <div style="display:flex;justify-content:space-between;font-size:14px"><span style="color:var(--text-muted)">Voter turnout</span><strong style="color:var(--gold)">62%</strong></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center" onclick="Modal.close('publishModal')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="publishResults()">🏆 Publish Now</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="../assets/js/electra.js"></script>
+<script>
+// Demo data
+const resultData = {
+  chairman: [
+    { name: 'Rohan Kumar',   votes: 584 },
+    { name: 'Arun Pillai',   votes: 423 },
+    { name: 'Vishnu Raj',    votes: 240 },
+  ],
+  vc: [
+    { name: 'Priya Nair',    votes: 698 },
+    { name: 'Meera Thomas',  votes: 549 },
+  ],
+  genSec: [
+    { name: 'Arjun Suresh',  votes: 521 },
+    { name: 'Kavya Rajan',   votes: 410 },
+    { name: 'Rahul Mohan',   votes: 196 },
+    { name: 'Divya Krishnan',votes: 120 },
+  ],
+  uuc: [
+    { name: 'Sneha Menon',   votes: 712 },
+    { name: 'Rohan Kumar',   votes: 683 },
+    { name: 'Arjun Suresh',  votes: 598 },
+    { name: 'Priya Nair',    votes: 455 },
+  ],
+  lady: [
+    { name: 'Kavya Rajan',   votes: 489 },
+    { name: 'Sneha Menon',   votes: 421 },
+    { name: 'Divya Krishnan',votes: 287 },
+  ],
+};
+
+setTimeout(() => {
+  ResultsRenderer.renderBars(resultData.chairman, 'chairmanBars');
+  ResultsRenderer.renderBars(resultData.vc,       'vcBars');
+  ResultsRenderer.renderBars(resultData.genSec,   'genSecBars');
+  ResultsRenderer.renderBars(resultData.uuc,      'uucBars');
+  ResultsRenderer.renderBars(resultData.lady,     'ladyBars');
+}, 300);
+
+// Dept results
+const depts = ['Computer Science','Mathematics','Physics','Chemistry','English','Commerce'];
+document.getElementById('deptResultsGrid').innerHTML = depts.map(d => `
+  <div class="result-seat-card">
+    <div class="result-seat-header">
+      <span style="font-size:18px">🏫</span>
+      <div><div style="font-weight:700">${d}</div><div style="font-size:12px;color:var(--text-muted)">UG &amp; PG Representatives</div></div>
+    </div>
+    <div style="padding:16px 20px">
+      <div style="font-size:12px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">UG Representative</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="vote-bar-wrap"><div class="vote-bar-header"><span class="vote-bar-name">Candidate A <span class="badge badge-teal" style="font-size:10px">Winner</span></span><span class="vote-bar-count">234</span></div><div class="vote-bar"><div class="vote-bar-fill teal" style="width:75%"></div></div></div>
+        <div class="vote-bar-wrap"><div class="vote-bar-header"><span class="vote-bar-name">Candidate B</span><span class="vote-bar-count">78</span></div><div class="vote-bar"><div class="vote-bar-fill" style="width:25%"></div></div></div>
+      </div>
+      <div class="divider" style="margin:14px 0"></div>
+      <div style="font-size:12px;font-weight:700;color:var(--sky);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">PG Representative</div>
+      <div class="vote-bar-wrap"><div class="vote-bar-header"><span class="vote-bar-name">Candidate C <span class="badge badge-sky" style="font-size:10px">Winner</span></span><span class="vote-bar-count">89</span></div><div class="vote-bar"><div class="vote-bar-fill" style="width:100%;background:linear-gradient(90deg,#2266aa,var(--sky))"></div></div></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:6px">Ran unopposed</div>
+    </div>
+  </div>
+`).join('');
+
+function switchResultTab(tab, el) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('resultGeneral').style.display = tab === 'general' ? 'grid' : 'none';
+  document.getElementById('resultDept').style.display    = tab === 'dept'    ? 'block' : 'none';
+  document.getElementById('resultLady').style.display    = tab === 'lady'    ? 'block' : 'none';
+}
+
+function publishResults() {
+  Modal.close('publishModal');
+  Toast.success('🏆 Results published! Students can now view the winners.');
+  document.querySelector('.badge.badge-gold').textContent = '✅ Published';
+  document.querySelector('.badge.badge-gold').className = 'badge badge-live';
+}
+</script>
+</body>
+</html>

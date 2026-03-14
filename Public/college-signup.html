@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register College — ELECTRA</title>
+<link rel="stylesheet" href="../assets/css/design-system.css">
+<style>
+body { display:flex; min-height:100vh; }
+
+/* SPLIT LAYOUT */
+.auth-left {
+  width: 44%;
+  background: var(--surface-1);
+  border-right: 1px solid var(--border-subtle);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 60px 56px;
+  position: relative; overflow: hidden;
+}
+.auth-left-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse 80% 60% at 30% 40%, rgba(233,168,50,.08), transparent);
+}
+.auth-left-content { position: relative; z-index: 1; }
+.auth-right {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 48px 56px;
+  overflow-y: auto;
+}
+.auth-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--text-muted); font-size: 13px;
+  margin-bottom: 36px; transition: color .2s;
+}
+.auth-back:hover { color: var(--text-primary); }
+
+/* FORM GRID */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ILLUSTRATION */
+.features-list { list-style: none; display: flex; flex-direction: column; gap: 16px; margin-top: 36px; }
+.features-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 14px; color: var(--text-secondary);
+}
+.features-list li .fi { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+/* STRENGTH BAR */
+.strength-wrap { margin-top: 8px; }
+.strength-bars { display: flex; gap: 4px; margin-bottom: 4px; }
+.strength-seg { height: 3px; flex: 1; border-radius: var(--r-full); background: var(--surface-3); transition: background .3s; }
+.strength-seg.weak   { background: var(--rose); }
+.strength-seg.medium { background: var(--gold); }
+.strength-seg.strong { background: var(--status-live); }
+.strength-label { font-size: 11px; color: var(--text-muted); }
+
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .auth-left { display: none; }
+  .auth-right { padding: 32px 24px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- LEFT PANEL -->
+<div class="auth-left">
+  <div class="auth-left-bg"></div>
+  <div class="auth-left-content">
+    <a href="index.html" class="auth-back">← Back to home</a>
+    <div class="flex gap-md" style="align-items:center; margin-bottom:32px">
+      <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:22px;color:var(--midnight)">E</div>
+      <span style="font-family:var(--font-display);font-size:1.4rem;font-weight:700">ELECTRA</span>
+    </div>
+    <div class="section-eyebrow" style="margin-bottom:12px">College Registration</div>
+    <h2 style="font-size:2rem; line-height:1.2; margin-bottom:16px">Your college's<br>election workspace<br><span class="shine-text">starts here.</span></h2>
+    <p style="color:var(--text-muted); font-size:14px; max-width:320px; line-height:1.8">
+      Register once and get a fully isolated election system for your institution. Your data, your elections, your control.
+    </p>
+    <ul class="features-list">
+      <li><span class="fi">🏛️</span> <div><strong style="color:var(--text-primary)">Isolated Workspace</strong><br>Your college's data is completely separate from all other institutions.</div></li>
+      <li><span class="fi">🔐</span> <div><strong style="color:var(--text-primary)">Admin Dashboard</strong><br>Full control over students, candidates, elections and results.</div></li>
+      <li><span class="fi">📧</span> <div><strong style="color:var(--text-primary)">Auto Credentials</strong><br>System generates login details for every student automatically.</div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- RIGHT PANEL — FORM -->
+<div class="auth-right">
+  <div style="max-width: 520px; margin: 0 auto; width: 100%">
+    <h3 style="font-family:var(--font-display); font-size:1.5rem; margin-bottom:6px">Create College Account</h3>
+    <p style="color:var(--text-muted); font-size:14px; margin-bottom:32px">Fill in your institution's details to get started.</p>
+
+    <form id="signupForm" novalidate>
+
+      <!-- COLLEGE INFO -->
+      <div style="margin-bottom:28px">
+        <div style="font-size:11px; font-weight:700; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:8px">
+          <span>🏫</span> College Information
+        </div>
+        <div style="display:flex; flex-direction:column; gap:14px">
+          <div class="form-group">
+            <label class="form-label">College Name *</label>
+            <div class="input-group">
+              <span class="input-icon">🏫</span>
+              <input type="text" class="form-input" id="collegeName" placeholder="e.g. St. Xavier's College of Arts & Science">
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">College Code *</label>
+              <div class="input-group">
+                <span class="input-icon">#</span>
+                <input type="text" class="form-input" id="collegeCode" placeholder="SXC001" maxlength="10" style="text-transform:uppercase">
+              </div>
+              <span class="form-hint">Unique identifier · no spaces</span>
+              <span class="form-error"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Official Email *</label>
+              <div class="input-group">
+                <span class="input-icon">@</span>
+                <input type="email" class="form-input" id="collegeEmail" placeholder="admin@college.edu">
+              </div>
+              <span class="form-error"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN INFO -->
+      <div style="margin-bottom:28px">
+        <div style="font-size:11px; font-weight:700; color:var(--gold); letter-spacing:.1em; text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:8px">
+          <span>👤</span> Admin Account
+        </div>
+        <div style="display:flex; flex-direction:column; gap:14px">
+          <div class="form-group">
+            <label class="form-label">Admin Full Name *</label>
+            <div class="input-group">
+              <span class="input-icon">👤</span>
+              <input type="text" class="form-input" id="adminName" placeholder="Your full name">
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password *</label>
+            <div class="input-group">
+              <span class="input-icon">🔒</span>
+              <input type="password" class="form-input" id="password" placeholder="Create a strong password">
+              <span class="input-suffix" id="togglePwd">👁</span>
+            </div>
+            <div class="strength-wrap">
+              <div class="strength-bars">
+                <div class="strength-seg" id="seg1"></div>
+                <div class="strength-seg" id="seg2"></div>
+                <div class="strength-seg" id="seg3"></div>
+                <div class="strength-seg" id="seg4"></div>
+              </div>
+              <span class="strength-label" id="strengthLabel">Enter a password</span>
+            </div>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password *</label>
+            <div class="input-group">
+              <span class="input-icon">🔒</span>
+              <input type="password" class="form-input" id="confirmPassword" placeholder="Re-enter your password">
+            </div>
+            <span class="form-error"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TERMS -->
+      <div style="display:flex; gap:10px; align-items:flex-start; margin-bottom:24px">
+        <input type="checkbox" id="terms" style="margin-top:3px; accent-color:var(--gold); width:16px;height:16px;cursor:pointer">
+        <label for="terms" style="font-size:13px; color:var(--text-muted); cursor:pointer; line-height:1.5">
+          I agree to the <a href="#" style="color:var(--gold)">Terms of Service</a> and confirm that the information provided is accurate.
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:14px">
+        Create College Account →
+      </button>
+
+      <p style="text-align:center; font-size:13px; color:var(--text-muted); margin-top:20px">
+        Already registered? <a href="college-login.html">Sign in to admin panel</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<script src="../assets/js/electra.js"></script>
+<script>
+// Password strength
+document.getElementById('password')?.addEventListener('input', function() {
+  const v = this.value;
+  const segs = [document.getElementById('seg1'), document.getElementById('seg2'), document.getElementById('seg3'), document.getElementById('seg4')];
+  const label = document.getElementById('strengthLabel');
+  let score = 0;
+  if (v.length >= 8)  score++;
+  if (/[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  segs.forEach((s, i) => {
+    s.className = 'strength-seg';
+    if (i < score) s.classList.add(score <= 1 ? 'weak' : score <= 2 ? 'medium' : 'strong');
+  });
+  label.textContent = ['', 'Weak', 'Fair', 'Good', 'Strong'][score] || 'Enter a password';
+  label.style.color = ['', 'var(--rose)', 'var(--gold)', 'var(--sky)', 'var(--status-live)'][score] || '';
+});
+
+// Toggle password visibility
+document.getElementById('togglePwd')?.addEventListener('click', () => {
+  const inp = document.getElementById('password');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+
+// College code uppercase
+document.getElementById('collegeCode')?.addEventListener('input', function() {
+  this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+});
+
+// Form submission is now handled by electra.js
+</script>
+</body>
+</html>
